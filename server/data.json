@@ -1,0 +1,68 @@
+{
+"bannerData": [
+	{
+	"id": 1,
+	"title": "轮播图1",
+	"shop_id": "1",
+	"image_src": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496154713916&di=95d37453acd0c0772f1d81f3c1b11b72&imgtype=0&src=http%3A%2F%2Fwww.chinacaixin.com%2Fupload%2Fuserfiles%2Fimages%2F%25D0%25D2%25B8%25A31.JPG",
+	"order": "1",
+	"publish_time": "2016-11-18 12:36:21",
+	"end_time": "2016-11-18 12:36:21"
+	},
+	{
+	"id": 1,
+	"title": "轮播图2",
+	"shop_id": "1",
+	"image_src": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496154713914&di=db0c83864c1b6ce47fd184c59abf5ab4&imgtype=0&src=http%3A%2F%2Fimage.panjiayuan.com%2Fhdpic%2F20150522160724.jpg",
+	"order": "2",
+	"publish_time": "2016-11-18 12:36:21",
+	"end_time": "2016-11-18 12:36:21"
+	}
+],
+"newGoodsData":[
+    {
+        "id": 1,
+        "shop_id": 1,
+        "goods_name": "罗汉核雕  五个 一套",
+        "goods_price": 19.9,
+        "goods_id": 211,
+        "status": "sold",
+        "sort": 1,
+        "name": "罗汉核雕",
+        "image_url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496156040610&di=d3577a0b8479a7852f8fad26f8c5e813&imgtype=0&src=http%3A%2F%2Fdata.rbz1672.com%2Fimages%2F20160930%2F14751965865465.jpg"
+    },
+    {
+        "id": 2,
+        "shop_id": 1,
+        "goods_name": "仙女核雕  单个 30cm高",
+        "goods_price": 210,
+        "goods_id": 212,
+        "status": "sold",
+        "sort": 2,
+        "name": "爱奇异果",
+        "image_url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496156040604&di=499c4954f9f29282e41cb6b3fb5d9fca&imgtype=0&src=http%3A%2F%2Fs16.sinaimg.cn%2Fmw690%2F005xl3qzzy6ZItEg2m33f%26690"
+    },
+    {
+        "id": 3,
+        "shop_id": 1,
+        "goods_name": "婴儿 无个套装",
+        "goods_price": 19.9,
+        "goods_id": 213,
+        "status": "sold",
+        "sort": 3,
+        "name": "婴儿",
+        "image_url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496156040603&di=1f4d9b4ebe7ee6890db5babb8c2814b4&imgtype=0&src=http%3A%2F%2Fimg5.duitang.com%2Fuploads%2Fitem%2F201410%2F25%2F20141025195520_WJfnZ.jpeg"
+    },
+    {
+        "id": 4,
+        "shop_id": 1,
+        "goods_name": "小人头",
+        "goods_price": 200,
+        "goods_id": 214,
+        "status": "sold",
+        "sort": 4,
+        "name": "小人头",
+        "image_url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496156040603&di=3929f8183aef680af1aa4312cf0794e3&imgtype=0&src=http%3A%2F%2Fimage.panjiayuan.com%2Fhdpic%2F20150522160650.jpg"
+    }
+]
+}
