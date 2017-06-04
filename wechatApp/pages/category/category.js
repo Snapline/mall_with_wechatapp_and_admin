@@ -16,30 +16,27 @@
 //   }
 // });
 
-
+var API = require('../../request/API.js');
 Page({
   data: {
     category: [
-      { name: '果味', id: 'guowei' },
-      { name: '蔬菜', id: 'shucai' },
-      { name: '炒货', id: 'chaohuo' },
-      { name: '点心', id: 'dianxin' },
-      { name: '粗茶', id: 'cucha' },
-      { name: '淡饭', id: 'danfan' }
+      { name: '弥勒', id: '1' },
+      { name: '达摩', id: '2' },
+      { name: '金刚', id: '3' }
     ],
     detail: [],
     curIndex: 0,
     isScroll: false,
-    toView: 'guowei'
+    toView: '1'
   },
   onReady() {
     var self = this;
     wx.request({
-      url: 'http://www.gdfengshuo.com/api/wx/cate-detail.txt',
+      url: API.APIDomian + 'catedata',
       success(res) {
         console.log(res.data)
         self.setData({
-          detail: res.data.result
+          detail: res.data
         })
       }
     });

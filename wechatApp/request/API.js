@@ -1,4 +1,4 @@
-var API = 'http://192.168.1.103:3000/';
+var API = 'http://192.168.1.105:3000/';
 
 var showModal = function(content) {
   wx.showModal({

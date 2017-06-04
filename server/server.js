@@ -11,6 +11,11 @@ app.get('/featuredata', function (req, res) {
    res.json( data.newGoodsData );
 })
 
+//分类
+app.get('/catedata', function (req, res) {
+   res.json( data.cateData );
+})
+
 app.get('/', function (req, res) {
   res.send('Hello World!');
 });

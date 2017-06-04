@@ -64,5 +64,53 @@
         "name": "小人头",
         "image_url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496156040603&di=3929f8183aef680af1aa4312cf0794e3&imgtype=0&src=http%3A%2F%2Fimage.panjiayuan.com%2Fhdpic%2F20150522160650.jpg"
     }
-]
+],
+
+    "cateData":[
+        {
+            "cate":"弥勒",
+            "id":"1",
+            "banner":"../../images/mile.jpg",
+            "detail":[
+                {
+                    "name":"弥勒",
+                    "thumb":"../../images/mile.jpg"
+                },
+                {
+                    "name":"大弥勒",
+                    "thumb":"../../images/mile2.jpg"
+                }
+            ]
+        },
+        {
+            "cate":"达摩",
+            "id":"2",
+            "banner":"../../images/damo.jpg",
+            "detail":[
+                {
+                    "name":"达摩1",
+                    "thumb":"../../images/damo.jpg"
+                },
+                {
+                    "name":"达摩2",
+                    "thumb":"../../images/damo2.jpg"
+                }
+            ]
+        },
+        {
+            "cate":"金刚",
+            "id":"3",
+            "banner":"../../images/jingang.jpg",
+            "detail":[
+                {
+                    "name":"金刚2222",
+                    "thumb":"../../images/jingang.jpg"
+                },
+                {
+                    "name":"金刚3",
+                    "thumb":"../../images/jingang2.jpg"
+                }
+            ]
+        } 
+    ]
 }
