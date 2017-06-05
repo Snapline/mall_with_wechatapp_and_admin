@@ -1,9 +1,11 @@
+<!--宝贝详情页面-->
 <import src="../../wxParse/wxParse.wxml" />
 <import src="../../templates/toast/toast.wxml" />
 
+
 <scroll-view class="page" scroll-y="true" id="product-detail">
     <view class="section swiper-container">
-        <!--宝贝多图滚动-->
+        <!--宝贝详情图滚动-->
         <swiper indicator-dots="{{indicatorDots}}" autoplay="true" interval="3000" duration="300" bindchange="currentchange">
             <block wx:for="{{product.picture}}">
                 <swiper-item class="picture">
@@ -11,13 +13,14 @@
                 </swiper-item>
             </block>
         </swiper>
-        <text class="index-con">{{current}} / {{product.picture.length}}</text>
+        <!--<text class="index-con">{{current}} / {{product.picture.length}}</text>-->
     </view>
+    <!--售卖价格，描述，卖出量等信息-->
     <view class="product-detail">
         <view class="detail product-name">{{product.goods_name}}</view>
-        <view class="detail product-price">¥ {{product.goods_price}}</view>
-        <view class=" product-market">
-            <text>市场价：¥ {{product.market_price}}</text>
+        <!--<view class="detail product-price">¥ {{product.goods_price}}</view>-->
+        <view class="product-price">
+            <text>市场价：¥ {{product.goods_price}}</text>
             <text class="product-sold">已售{{product.sold_count}}件</text>
         </view>
     </view>

@@ -20,13 +20,12 @@ var API = require('../../request/API.js');
 Page({
   data: {
     category: [
-      { name: '弥勒', id: '1' },
-      { name: '达摩', id: '2' },
-      { name: '金刚', id: '3' }
+      { name: '弥勒', id: 'm1' },
+      { name: '达摩', id: 'm2' },
+      { name: '金刚', id: 'm3' }
     ],
     detail: [],
     curIndex: 0,
-    isScroll: false,
     toView: '1'
   },
   onReady() {
