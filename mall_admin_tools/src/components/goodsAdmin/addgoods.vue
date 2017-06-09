@@ -60,6 +60,22 @@
 				   <el-input type="text" v-model="newGoodsForm.price" auto-complete="off"></el-input>
 				</el-form-item>
 				
+				<el-form-item
+				    label="产品图"
+				    prop="pics"
+				  >
+				    <el-upload
+					  ref="goodsPic"
+					  class="upload_area"
+					  :data="fileSendName"
+					  action="api/supplier/addLicense"
+					  name="goodspic"
+					  :auto-upload="false" 
+					  :on-success="goodsPicsSuc">
+					  <el-button slot="trigger" size="small" type="primary">选择图片</el-button>
+					</el-upload>
+				</el-form-item>
+				
 			  <el-form-item>
 			    <el-button type="primary" @click="submitForm('newGoodsForm')">提交</el-button>
 			    <!--<el-button @click="clearForm">取消</el-button>-->
@@ -146,20 +162,6 @@
             })
 	    },
 	    methods:{
-	    	//线上线下选择切换
-	    	changeType(){
-	    		if(this.newGoodsForm.requestType == 1){
-	    			//请款类型是加油卡
-	    			this.oilOperatorShow = true;
-	    		}
-	    		else{
-	    			//请款类型是话费卡
-	    			this.oilOperatorShow = false;
-	    		}
-	    	},
-	    	setDate(e){
-		    	this.newGoodsForm.arrTime = e;
-		    },
 	    	submitForm(formName) {
 		        this.$refs[formName].validate((valid) => {
 		          if (valid) {
@@ -263,5 +265,11 @@
 	
 	.new_user_form{
 		width:460px;
+	}
+	
+	
+	.el-checkbox-group{
+		display: inline-block;
+		margin-right: 16px;
 	}
 </style>

@@ -11,6 +11,7 @@ export default new Router({
             redirect: '/login'
         },
         //商品管理
+        //商品列表
          {
             path: '/goodslist',
             component: resolve => require(['../components/home.vue'], resolve),
@@ -21,6 +22,7 @@ export default new Router({
             	}
             ]
         },
+        //商品分类
         {
             path: '/category',
             component: resolve => require(['../components/home.vue'], resolve),
@@ -31,6 +33,7 @@ export default new Router({
             	}
             ]
         },
+        //添加商品
          {
             path: '/addgoods',
             component: resolve => require(['../components/home.vue'], resolve),
@@ -41,79 +44,19 @@ export default new Router({
             	}
             ]
         },
-        //充值业务请款
-//      {
-//          path: '/cashout',
-//          component: resolve => require(['../components/home.vue'], resolve),
-//          children:[
-//          	{
-//          		path: '/',
-//          		component: resolve => require(['../components/charge/cashout.vue'], resolve)
-//          	}
-//          ]
-//      },
-//      //供应商列表
-//      {
-//          path: '/supplylist',
-//          component: resolve => require(['../components/home.vue'], resolve),
-//          children:[
-//          	{
-//          		path: '/',
-//          		component: resolve => require(['../components/supply/supplytable.vue'], resolve)
-//          	}
-//          ]
-//      },
-//      {
-//          path: '/newsupply',
-//          component: resolve => require(['../components/home.vue'], resolve),
-//          children:[
-//          	{
-//          		path: '/',
-//          		component: resolve => require(['../components/supply/newsupply.vue'], resolve)
-//          	}
-//          ]
-//      },
-//      {
-//          path: '/detailsupply',
-//          component: resolve => require(['../components/home.vue'], resolve),
-//          children:[
-//          	{
-//          		path: '/',
-//          		component: resolve => require(['../components/supply/detailSupply.vue'], resolve)
-//          	}
-//          ]
-//      },
-//      {
-//          path: '/editsupply',
-//          component: resolve => require(['../components/home.vue'], resolve),
-//          children:[
-//          	{
-//          		path: '/',
-//          		component: resolve => require(['../components/supply/editSupply.vue'], resolve)
-//          	}
-//          ]
-//      },
-//      //权限管理模块
-//      {
-//          path: '/userauth',
-//          component: resolve => require(['../components/home.vue'], resolve),
-//          children:[
-//          	{
-//          		path: '/',
-//          		component: resolve => require(['../components/auth/userauth.vue'], resolve)
-//          	}
-//          ]
-//      }, 
-//      {
-//          path: '/roleauth',
-//          component: resolve => require(['../components/home.vue'], resolve),
-//          children:[
-//          	{
-//          		path: '/',
-//          		component: resolve => require(['../components/auth/roleauth.vue'], resolve)
-//          	}
-//          ]
-//      },
+        
+         //订单管理
+         //订单列表
+         {
+            path: '/orderlist',
+            component: resolve => require(['../components/home.vue'], resolve),
+            children:[
+            	{
+            		path: '/',
+            		component: resolve => require(['../components/orderAdmin/orderlist.vue'], resolve)
+            	}
+            ]
+        },
         {
             path: '/login',
             component: resolve => require(['../components/login.vue'], resolve)
