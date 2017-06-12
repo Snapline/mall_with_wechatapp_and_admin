@@ -22,9 +22,10 @@
 		    </view>
 		</view>
 	    <view class="btnBox">
-	    	<navigator class="add" url="../address-edit/address-edit">
+	    	<!--<navigator class="add" url="../address-edit/address-edit">
 	        	<text>新增地址</text>
-	    	</navigator>
+	    	</navigator>-->
+        <button  class="add" bindtap="addAddress">新增地址</button>
 	    </view>
 	</view>
 </view>

@@ -112,5 +112,11 @@
                 }
             ]
         } 
-    ]
+    ],
+
+    "paidNum": {
+    	"unpaid": 2,
+    	"undelivered": 5,
+    	"unreceived": 3
+    }
 }

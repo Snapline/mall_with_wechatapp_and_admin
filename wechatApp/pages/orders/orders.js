@@ -50,6 +50,8 @@ Page({
     });
     return data;
   },
+
+  //导航栏切换类别
   changeList(e) {
     const that = this;
     const alias = e.target.dataset.alias;

@@ -1,3 +1,4 @@
+<!--模板，传入item的文字标题，图标，描述等-->
 <template name="list">
     <view class="list" hover-class="none" data-tip="{{tip}}" data-url="{{url}}" catchtap='navigateTo'>
         <view class="list-icon-wrap"><image src="{{icon}}" class="list-icon"></image></view>
@@ -7,23 +8,27 @@
     <view hidden="{{!cut?true:false}}" style="height: 23.44rpx;"></view>
 </template>
 
+<!--页面scroll开始，依次引用模板-->
 <scroll-view scroll-y="trues" class="user">
+    <!--上方头像区域-->
     <view class="info">
         <view class="info-wrap">
-            <image class="info-icon" src="{{userInfo.avatarUrl}}" catchtap="navigateTo" data-url-type="userinfo"></image>
+            <image class="info-icon" src="{{userInfo.avatarUrl}}" data-url-type="userinfo"></image>
             <view class="info-name">{{userInfo.nickName}}</view>
         </view>
     </view>
-
+    <!--我的订单-->
     <template is="list" data="{{...order}}"></template>
+    <!--待付款 代发货 待收货-->
     <view class="order">
         <block wx:for="{{orderCell}}">
             <navigator hover-class="none" url="{{item.url}}" class="order-cell">
                 <image class="{{item.class}}" src="{{item.icon}}"></image>
                 <view class="badge" wx:if="{{ item.count > 0 }}">{{item.count}}</view>
-                <view>{{item.text}}</view>
+                <view style="font-size:30rpx;">{{item.text}}</view>
             </navigator>
         </block>
     </view>
+    <!--地址管理 客服 意见 关于-->
     <template wx:for="{{list}}" is="list" data="{{...item}}"></template>
 </scroll-view>

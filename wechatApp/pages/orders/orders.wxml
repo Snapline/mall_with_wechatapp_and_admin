@@ -23,8 +23,6 @@
             <view class="count-carriage">运费：<text>￥{{shipping_price}}</text></view>
         </view>
         <view class="cell-btn" hidden="{{order.isButtonShow}}">
-            <!-- <button class="btn-order btn-solid-red">去支付</button> 
-            <button class="btn-order btn-hollow-gray" data-order-id="{{order_sn}}" bindtap="cancalOrder">取消订单</button> -->
 
             <button class="btn-order btn-solid-red" wx:if="{{ order.orderStatus==='待支付' }}" bindtap="payOrder" data-order-sn="{{order.orderSn}}">去支付</button>
 
@@ -41,6 +39,7 @@
     </view>
 </template>
 
+<!--页面开始-->
 <view class="nav-header">
     <view wx:for="{{navs}}" class="nav-cell {{item.alias==activeNav?'active':''}}" bindtap="changeList" data-alias="{{item.alias}}">{{item.text}}</view>
 </view>
@@ -52,6 +51,8 @@
                 <template is="order-cell" data="{{...item}}"></template>
             </block>
         </view>
+
+        <!--无订单时-->
         <view class="empty {{orderList.length===0?'':'hide'}}">
             <image class="empty-img" src="images/empty.png"></image>
             <view>您还没有相关的订单</view>

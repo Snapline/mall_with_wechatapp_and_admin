@@ -1,3 +1,6 @@
+view, text{
+  font-size: 30rpx;
+}
 .hide {
     display: none;
 }
@@ -20,10 +23,11 @@
 }
 .nav-cell {
     -webkit-box-flex: 1;
+    font-size:30rpx;
 }
 .nav-cell.active {
-    color: #ff4b2d;
-    border-bottom: #ff4b2d 4.69rpx solid;
+    color:#ffa500;
+    border-bottom: #ffa500 4.69rpx solid;
 }
 
 .order-cell {

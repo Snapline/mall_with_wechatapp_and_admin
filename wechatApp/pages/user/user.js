@@ -1,5 +1,5 @@
 import resource from '../../lib/resource';
-
+var API = require('../../request/API.js');
 const app = getApp();
 
 Page({
@@ -11,7 +11,7 @@ Page({
       tip: '',
       url: '../orders/orders?t=all'
     },
-    // 收货数量
+    // 收货付款数量
     orderBadge: {
       unpaid: 0,
       undelivered: 0,
@@ -60,48 +60,43 @@ Page({
       }
     ]
   },
-  countOrder(orderList) {
-    /* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
-    this.orderBadge = { unpaid: 0, undelivered: 0, unreceived: 0 };
-
-    for (let i = orderList.length - 1; i >= 0; i--) {
-      switch (orderList[i].order_status) {
-      case '待支付': this.orderBadge.unpaid += 1; break;
-      case '待发货': this.orderBadge.undelivered += 1; break;
-      case '待收货': this.orderBadge.unreceived += 1; break;
-      default: break;
-      }
-    }
-    this.data.orderCell[0].count = this.orderBadge.unpaid;
-    this.data.orderCell[1].count = this.orderBadge.undelivered;
-    this.data.orderCell[2].count = this.orderBadge.unreceived;
-    this.setData({
-      orderBadge: this.orderBadge,
-      orderCell:this.data.orderCell
-    });
-  },
-  //点击触发
+  
   onShow(){
-    resource.fetchOrderList().then((res) => {
-      const orderList = res.data;
-      this.countOrder(orderList);
-    });
-     this.setData({
-      userInfo: app.globalData.userInfo
-    });
+    var that = this;
+     app.getUserInfo(function (userInfo) {
+       //更新数据
+       that.setData({
+         userInfo: userInfo
+       })
+    })
+    wx.request({
+      url: API.APIDomian + 'paidNum',
+      data: {},
+      method: 'GET',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+      },
+      success: function (res) {
+
+        that.data.orderCell[0].count = res.data.unpaid;
+        that.data.orderCell[1].count = res.data.undelivered;
+        that.data.orderCell[2].count = res.data.unreceived;
+        that.setData({
+          orderCell: that.data.orderCell
+        });
+      },
+      fail: function () {
+        API.failTips('订单信息获取失败，请重试')
+      }
+    })
   },
   onLoad() {
     this.setData({
       userInfo: app.globalData.userInfo
     });
-    // 订单列表
-    resource.fetchOrderList().then((res) => {
-      console.log(233);
-      console.log(res);
-      const orderList = res.data;
-      this.countOrder(orderList);
-    });
   },
+
+  // 点击进入
   navigateTo(e) {
     const url = e.currentTarget.dataset.url;
     if (e.currentTarget.dataset.urlType) {

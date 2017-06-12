@@ -20,6 +20,11 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
+//个人信息
+app.get('/paidNum', function (req, res) {
+  res.send(data.paidNum);
+});
+
 var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
