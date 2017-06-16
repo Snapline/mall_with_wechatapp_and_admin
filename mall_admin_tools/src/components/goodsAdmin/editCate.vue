@@ -118,11 +118,6 @@
 					
                 })
 	    		}
-//	    		this.$refs.dropzone.processQueue()
-//	    		var _this = this;
-//		        this.$refs[formName].validate((valid) => {
-//		            _this.$refs.dropzone.processQueue()
-//		        });
 		        
 		    },
 		    catePicsSuc(response, file, fileList){
