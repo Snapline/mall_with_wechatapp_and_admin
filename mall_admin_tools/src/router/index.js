@@ -33,6 +33,28 @@ export default new Router({
             	}
             ]
         },
+        //添加分类
+        {
+            path: '/addcategory',
+            component: resolve => require(['../components/home.vue'], resolve),
+            children:[
+            	{
+            		path: '/',
+            		component: resolve => require(['../components/goodsAdmin/addCate.vue'], resolve)
+            	}
+            ]
+        },
+        //修改分类
+        {
+            path: '/editcategory',
+            component: resolve => require(['../components/home.vue'], resolve),
+            children:[
+            	{
+            		path: '/',
+            		component: resolve => require(['../components/goodsAdmin/editCate.vue'], resolve)
+            	}
+            ]
+        },
         //添加商品
          {
             path: '/addgoods',

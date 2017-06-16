@@ -62,9 +62,9 @@
     display: inline-block;
 }
 .param .title{
-    font-size: 0.6rem;
+    font-size: 30rpx;
     width: 8.6rem;
-    line-height: 0.65rem;
+    line-height: 30rpx;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -144,7 +144,7 @@
     display: inline-block;
     float: right;
     margin-right: 1rem;
-    color: red;
+    color: orange;
 }
 .balance {
     position: fixed;
@@ -184,7 +184,7 @@
     margin-top: 0.45rem;
     padding: 0;
     border-radius: .25rem;
-    background-color: #fc3151;
+    background-color: orange;
     color: white;
     font-size: .85rem;
     border: none;
@@ -253,7 +253,7 @@
     margin: auto;
     font-size: 26rpx;
     border-radius: 8rpx;
-    background-color: #FF2D4B;
+    background-color: orange;
     color: #FFF;
     text-align: center;
 }

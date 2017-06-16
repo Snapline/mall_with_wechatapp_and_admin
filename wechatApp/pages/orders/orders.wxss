@@ -39,7 +39,7 @@ view, text{
 .cell-status {
     text-align: right;
     padding: 23.44rpx 18.74rpx;
-    color: #ff2d4b;
+    color: orange;
 }
 .cell-item {
     padding-bottom: 35.15rpx;

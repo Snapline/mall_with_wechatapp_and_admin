@@ -15,7 +15,7 @@
         <view class="cart {{(cartList.length>0 && !loading) ? '':'hidden'}}">
             <view wx:for="{{cartList}}" wx:for-item="product" class="product">
                 <view class="checkbox clearfix add-btn">
-                    <icon type="{{product.status ? 'success' : 'circle'}}" color="{{product.status ? 'red' : ''}}" size="20" bindtap="selectProduct" data-checked-status="{{checkedStatus}}" data-id="{{product.id}}"></icon>
+                    <icon type="{{product.status ? 'success' : 'circle'}}" color="{{product.status ? 'orange' : ''}}" size="20" bindtap="selectProduct" data-checked-status="{{checkedStatus}}" data-id="{{product.id}}"></icon>
                 </view>
                 <view class="img">
                     <image class="image" src="{{product.thumb_url}}" mode="scaleToFill"></image>
@@ -24,9 +24,9 @@
                     <view class="title">
                         <text>{{product.goods_name}}</text>
                     </view>
-                    <view class="type">
+                    <!--<view class="type">
                         <text>{{product.goods_attr}}</text>
-                    </view>
+                    </view>-->
                     <view class="quantity">
                         <view class="btn-ad {{product.decr_class}}" bindtap="changeNumber" data-id="{{product.id}}" data-type="min">-</view>
                         <view class="count">{{product.goods_number}}</view>
@@ -34,7 +34,7 @@
                     </view>
                     <view class="price">
                         <view class="real">￥ {{product.real_price}}</view>
-                        <view class="cost">￥ {{product.market_price}}</view>
+                        <!--<view class="cost">￥ {{product.market_price}}</view>-->
                     </view>
                     <view class="del" bindtap="delProduct" data-id="{{product.id}}">
                         <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtBAMAAADINP+pAAAAKlBMVEUAAACgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKApyNsCAAAADXRSTlMA7Fohd8KHlks1seQKRhs+AQAAAI1JREFUOMtjgAHmvXfv3r1twIAODC8KCgrKbkYX5rxbACS5MDTMvQam1sI1pIaCwV0HMO/URQg3gUH2LhhcgajiWQvhCjAcNgYDmLnMEO4BBtoDNww/LgZTskDMdBPolEtARigQs1yCi7MBmRzXgYy7o+Kj4iSJI9LVFcx0hQB0FBdEA7IQ8bV30QHQ0QA9wJXpSEY20AAAAABJRU5ErkJggg=="></image>
@@ -52,7 +52,7 @@
     </view>
     <view class="balance">
         <view class="checkbox">
-            <icon type="{{checkedStatus ? 'success' : 'circle'}}" color="{{checkedStatus ? 'red' : ''}}" size="20" bindtap="selectProduct" data-id="0" data-checked-status="{{checkedStatus}}"></icon>
+            <icon type="{{checkedStatus ? 'success' : 'circle'}}" color="{{checkedStatus ? 'orange' : ''}}" size="20" bindtap="selectProduct" data-id="0" data-checked-status="{{checkedStatus}}"></icon>
             <text>全选</text>
         </view>
         <button class="button" bindtap="toSettlement">结算({{buyNumber}})</button>

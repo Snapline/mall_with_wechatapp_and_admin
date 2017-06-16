@@ -5,6 +5,7 @@ page {
   font-size: 37.44rpx;
   font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
   overflow: hidden;
+  font-family: "微软雅黑"
 }
 .hidden {
     display: none;
@@ -31,7 +32,7 @@ page {
 }
 
 .btn-solid-red {
-  background: #ff2d4b;
+  background: orange;
   color: #fff;
 }
 

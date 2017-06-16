@@ -18,10 +18,11 @@ upper-threshold="10"
 
   <!--新品推荐标题-->
   <view  class="section feature-list" >
-    <view class="feature-header">
+    <!--<view class="feature-header">
       <icon><image  class="header-img" src="./images/feature.png"></image></icon>
       <text>精选推荐</text>
-    </view>
+    </view>-->
+    <text>精选推荐</text>
      <!--新品features推荐内容-->
    <block  wx:for="{{features}}" wx:for-item="feature" >
       <view wx:if="{{feature.length == 0}}" class="feature clearfix" data-goods-id="{{feature.goods_id}}">

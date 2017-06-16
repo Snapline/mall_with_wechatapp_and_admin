@@ -25,6 +25,17 @@ app.get('/paidNum', function (req, res) {
   res.send(data.paidNum);
 });
 
+//购物车信息
+app.get('/cartInfo', function (req, res) {
+  res.send(data.cartList);
+});
+
+//具体宝贝信息
+app.get('/productInfo', function (req, res) {
+  res.send(data.productInfo);
+});
+
+
 var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;

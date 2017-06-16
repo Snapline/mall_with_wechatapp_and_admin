@@ -1,56 +1,105 @@
 var app = getApp();
 import resource from '../../lib/resource';
+var API = require('../../request/API.js');
 
 Page({
   data: {
     loading: true,
     cartList: [],
     totalNumber: 0, //一共有多少件商品
-    totalPrice: 0,
-    checkedStatus: true,
+    totalPrice: 0, //总价
+    checkedStatus: true, //全选
     buyNumber: 0,
     buyPrice: 0,
   },
   onShow() {
     const that = this;
-    resource.fetchCartIndex().then(res => {
-      var totalNumber = 0;
-      var totalPrice = 0;
-      var buyNumber = 0;
-      var buyPrice = 0;
-      res.data.forEach(item => {
-        // 保留两位小数点
-        item.real_price = item.real_price.toFixed(2);
-        item.market_price = item.market_price.toFixed(2);
-        if (!item.status) {
-          that.setData({ checkedStatus: false });
-        } else {
+    //获取购物车信息
+    wx.request({
+      url: API.APIDomian + 'cartInfo',
+      data: {},
+      method: 'GET',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+      },
+      success: function (res) {
+        var totalNumber = 0;
+        var totalPrice = 0;
+        var buyNumber = 0;
+        var buyPrice = 0;
+        res.data.forEach(item => {
+          // 保留两位小数点
+          item.real_price = item.shop_price.toFixed(2);
+          item.status = true;
           buyNumber += item.goods_number;
-          buyPrice += item.goods_number * item.real_price;
-        }
-        totalNumber += item.goods_number;
-        totalPrice += item.goods_number * item.real_price;
-        if (item.goods_number == item.stock_num) {
-          item.plus_class = "disabled";
-        } else {
-          item.plus_class = "";
-        }
-        if (item.goods_number == 1) {
-          item.decr_class = "disabled";
-        } else {
-          item.decr_class = "";
-        }
-      })
-      that.setData({
-        cartList: res.data,
-        loading: false,
-        totalNumber: totalNumber,
-        totalPrice: totalPrice.toFixed(2),
-        buyNumber: buyNumber,
-        buyPrice: buyPrice.toFixed(2)
-      });
+          console.log(buyNumber)
+          buyPrice += item.goods_number * item.shop_price;
+          totalNumber += item.goods_number;
+          totalPrice += item.goods_number * item.shop_price;
+          if (item.goods_number == item.storeNum) {
+            item.plus_class = "disabled";
+          } else {
+            item.plus_class = "";
+          }
+          if (item.goods_number == 1) {
+            item.decr_class = "disabled";
+          } else {
+            item.decr_class = "";
+          }
+        })
+        that.setData({
+          cartList: res.data,
+          loading: false,
+          totalNumber: totalNumber,
+          totalPrice: totalPrice.toFixed(2),
+          buyNumber: buyNumber,
+          buyPrice: buyPrice.toFixed(2)
+        });
 
+
+      },
+      fail: function () {
+        API.failTips('购物车信息请求错误，请重新请求')
+      }
     })
+    // resource.fetchCartIndex().then(res => {
+    //   var totalNumber = 0;
+    //   var totalPrice = 0;
+    //   var buyNumber = 0;
+    //   var buyPrice = 0;
+    //   res.data.forEach(item => {
+    //     // 保留两位小数点
+    //     item.real_price = item.real_price.toFixed(2);
+    //     item.market_price = item.market_price.toFixed(2);
+    //     if (!item.status) {
+    //       that.setData({ checkedStatus: false });
+    //     } else {
+    //       buyNumber += item.goods_number;
+    //       buyPrice += item.goods_number * item.real_price;
+    //     }
+    //     totalNumber += item.goods_number;
+    //     totalPrice += item.goods_number * item.real_price;
+    //     if (item.goods_number == item.stock_num) {
+    //       item.plus_class = "disabled";
+    //     } else {
+    //       item.plus_class = "";
+    //     }
+    //     if (item.goods_number == 1) {
+    //       item.decr_class = "disabled";
+    //     } else {
+    //       item.decr_class = "";
+    //     }
+    //   })
+    //   that.setData({
+    //     cartList: res.data,
+    //     loading: false,
+    //     totalNumber: totalNumber,
+    //     totalPrice: totalPrice.toFixed(2),
+    //     buyNumber: buyNumber,
+    //     buyPrice: buyPrice.toFixed(2)
+    //   });
+
+    // })
   },
   // 选择商品
   selectProduct(event) {
@@ -102,7 +151,7 @@ Page({
     this.data.cartList.forEach(item => {
       if (item.id == cartId) {
         if (optType == 'plus') {
-          if (item.stock_num == item.goods_number) {
+          if (item.storeNum == item.goods_number) {
             this.setData({
               toast: {
                 toastClass: 'yatoast',
@@ -144,7 +193,7 @@ Page({
             resource.updCartNumber(cartId, optType);
           }
         }
-        if (item.goods_number == item.stock_num) {
+        if (item.goods_number == item.storeNum) {
           item.plus_class = "disabled";
         } else {
           item.plus_class = "";
@@ -159,10 +208,10 @@ Page({
 
       } else {
         buyNumber += item.goods_number;
-        buyPrice += item.goods_number * item.real_price;
+        buyPrice += item.goods_number * item.shop_price;
       }
       totalNumber += item.goods_number;
-      totalPrice += item.goods_number * item.real_price;
+      totalPrice += item.goods_number * item.shop_price;
     });
     this.setData({
       cartList: this.data.cartList,

@@ -70,7 +70,7 @@ swiper-item image {
 }
 
 .feature .title-wrapper {
-  font-size: 28.08rpx;
+  font-size: 34rpx;
   height: 70.2rpx;
   line-height: 70.2rpx;
   overflow: hidden;

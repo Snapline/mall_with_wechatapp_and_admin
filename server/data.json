@@ -114,9 +114,46 @@
         } 
     ],
 
+    "cartList":[
+    	{
+    		"thumb_url":"../../images/jingang.jpg",
+    		"goods_name": "金刚",
+    		"goods_attr": "嘻嘻哈哈",
+    		"id": 330,
+    		"shop_price":230,
+    		"storeNum": 50,
+    		"goods_number":3
+    	},
+    	{
+    		"thumb_url":"../../images/mile2.jpg",
+    		"goods_name": "弥勒",
+    		"goods_attr": "嘻嘻哈哈",
+    		"id": 329,
+    		"shop_price":183,
+    		"storeNum": 3,
+    		"goods_number":2
+    	}
+    ],
+
     "paidNum": {
     	"unpaid": 2,
     	"undelivered": 5,
     	"unreceived": 3
+    },
+
+    "productInfo":{
+    	"id": 2,
+    	"picture": ["http://img13.360buyimg.com/n1/jfs/t3655/151/1971152678/274261/fb508f8c/5840d683Na2190edd.jpg","http://img13.360buyimg.com/n1/jfs/t3619/270/2066693637/130324/872511e6/583b993cNf8b30bcd.jpg"],
+    	"goods_name": "爱奇果 陕西眉县 徐香猕猴桃 12粒装 单果100-120g",
+    	"goods_price": 200,
+    	"sold_count": 11,
+    	"score_num": 52,
+    	"last_score":{
+    		"profile": "../../images/mile2.jpg",
+    		"username": "xixihaha",
+    		"description": "第一次购买，非常好",
+    		"date": "2017-09-01"
+    	},
+    	"detail": "../../images/mile2.jpg"
     }
 }

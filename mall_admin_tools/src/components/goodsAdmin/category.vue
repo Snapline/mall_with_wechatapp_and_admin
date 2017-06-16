@@ -10,7 +10,7 @@
 		  <el-col :span="24">
 		  	<div class="grid-content bg-purple-dark">
 		  	分类列表
-		  	<el-button class="newBtn" type="info" @click="createUser">添加新类</el-button>
+		  	<el-button class="newBtn" type="info" @click="createCate">添加新类</el-button>
 		  	</div>
 		  </el-col>
 		</el-row>
@@ -23,14 +23,21 @@
 		    v-loading.body="tableLoading"
 		    style="width: 100%">
 		    <el-table-column
-		      prop="category"
+		      prop="pic"
+		      label="类别图">
+		      <template scope="scope">
+		        <img style="width:50px;height:50px;" :src="apiHead+scope.row.pic_url_resize" />
+		      </template>
+		    </el-table-column>
+		    <el-table-column
+		      prop="name"
 		      label="分类名称">
 		    </el-table-column>
 		    
 		     <el-table-column
 		      label="操作">
 		      <template scope="scope">
-		        <el-button @click="editType(scope.row.id, scope.row.category)" type="info" size="small">修改类名</el-button>
+		        <el-button @click="editType(scope.row.id, scope.row.pic_url_resize, scope.row.name)" type="info" size="small">修改类名</el-button>
 		        <el-button @click="deleteType(scope.row.id)" type="danger" size="small">删除</el-button>
 		      </template>
 		    </el-table-column>
@@ -48,39 +55,37 @@
 
 <script>
 	import data from '../../mock/data.js'
+	import API from '../request/api.js'
 	export default {
 	    data() {
+	    
+	    	const generateData = _ => {
+		        return API.APIDomain;
+		      };
 	    	return {
 	    		tableLoading: true,
 	        	//页码数据
 	        	curPage:1,
 	        	tableData:[],
-	        	totalPage:10
+	        	totalPage:10,
+	        	apiHead: generateData()
+	        	
 	      	};
 	    },
 	    created(){
-	    	this.userInfoRequest(1);
+	    	this.categoryRequest(1);
 	    },
 	    methods:{
-		    //编辑用户信息
-		    editType(id, cateName){
-		    	this.$prompt('请输入新的分类名称', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消'
-		        }).then(({ value }) => {
-		          this.$message({
-		            type: 'success',
-		            message: '你的新类别名称是: ' + value
-		          });
-		        }).catch(() => {
-		          this.$message({
-		            type: 'info',
-		            message: '取消输入'
-		          });       
-		        });
+	    	//新建分类
+	    	createCate(){
+	    		this.$router.push({ path: 'addcategory'})
+	    	},
+		    //编辑分类信息
+		    editType(id, catePic, cateName){
+		    	this.$router.push({ path: 'editcategory', query:{'cateId':id, 'catePic':catePic, 'cateName':cateName}})
 		    },
 		    
-		    //删除用户信息
+		    //删除分类信息
 		    deleteType(id){
 		    	this.$confirm('是否删除该分类?', '提示', {
 		          confirmButtonText: '确定',
@@ -106,13 +111,14 @@
 		          });          
 		        });
 		    },
-		    //获取用户列表
-		    userInfoRequest(oPage){
+		    
+		    //获取分类列表
+		    categoryRequest(oPage){
 		    	var self = this;
 		    	this.tableLoading = true;
-            	self.$http.post('/cateInfo', {}, {emulateJSON: true}).then(function (response) {
+            	self.$http.get('api/admin/categorys', {}, {emulateJSON: true}).then(function (response) {
             		this.tableLoading = false;
-              		this.tableData = response.data.cateInfo;
+              		this.tableData = response.data.data;
                 }, function (response) {
 					if(response.status == 401 || response.status == 403){
 						//session过期
@@ -127,7 +133,7 @@
 		    //翻页
 		    changePage(val){
 		    	this.curPage = val;
-		    	this.userInfoRequest(val)
+		    	this.categoryRequest(val)
 		    }
 	    }
 	};
