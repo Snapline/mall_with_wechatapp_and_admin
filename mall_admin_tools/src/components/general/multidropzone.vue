@@ -3,7 +3,7 @@
   <div>
   	<form :action="url" class="vue-dropzone dropzone" :id="id">
   </form>
-     <span>Tips: 此类型只能上传一张~</span>
+     <span>Tips: 可以穿多张图片，但是建议不要超过四张~</span>
   </div>
 
 </template>
@@ -54,7 +54,7 @@
       },
       maxNumberOfFiles: {
         type: Number,
-        default: 1
+        default: 5
       },
       autoProcessQueue: {
         type: Boolean,

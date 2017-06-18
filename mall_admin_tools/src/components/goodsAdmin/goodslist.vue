@@ -24,24 +24,48 @@
 		    <el-table-column
 		      prop="smallpic"
 		      label="缩略图">
+		       <template scope="scope">
+		        <img style="width:50px;height:50px;" :src="apiHead+scope.row.pic_url_resize" />
+		      </template>
 		    </el-table-column>
 		    <el-table-column
-		      prop="goodsName"
+		      prop="name"
 		      label="名称">
 		    </el-table-column>
 		    <el-table-column
-		      prop="category"
+		      prop="category_name"
 		      label="分类">
 		    </el-table-column>
 		    <el-table-column
 		      prop="price"
 		      label="价格">
 		    </el-table-column>
+		      <el-table-column
+		      prop="status"
+		      label="上架信息">
+		       <template scope="scope">
+		        <span v-if="scope.row.status==1" style="color:red">已下架</span>
+		        <span v-else>上架中</span>
+		      </template>
+		    </el-table-column>
 		     <el-table-column
-		      label="操作">
+		      prop="status"
+		      label="广告信息">
+		       <template scope="scope">
+		        <span v-if="scope.row.index==0" style="color:orange">广告位</span>
+		        <span v-else>非广告位</span>
+		      </template>
+		    </el-table-column>
+		     <el-table-column
+		      label="操作"
+		      min-width="180">
 		      <template scope="scope">
-		        <el-button @click="editUser(scope.row.id, scope.row.realName, scope.row.nickName, scope.row.username, scope.row.roleIds)" type="info" size="small">修改</el-button>
-		        <el-button @click="deleteUser(scope.row.id)" type="warning" size="small">删除</el-button>
+		        <el-button @click="editGoods(scope.row.id)" type="info" size="small">修改</el-button>
+		         <el-button v-show="scope.row.status==0" @click="deleteGoods(scope.row.id)" type="danger" size="small">下架</el-button>
+		        <el-button v-show="scope.row.status==1" @click="restoreGoods(scope.row.id)" type="success" size="small">上架</el-button>
+		        
+		         <el-button v-show="scope.row.index==0 && scope.row.status==0" @click="unPromoteGoods(scope.row.id)" type="danger" size="small">下广告</el-button>
+		        <el-button v-show="scope.row.index==1 && scope.row.status==0" @click="promoteGoods(scope.row.id)" type="success" size="small">推广告</el-button>
 		      </template>
 		    </el-table-column>
 		  </el-table>
@@ -58,63 +82,95 @@
 
 <script>
 	import data from '../../mock/data.js'
+	import API from '../request/api.js'
 	export default {
 	    data() {
-	    	return {
-	    		tableLoading: true,
-	        	//页码数据
-	        	curPage:1,
-	        	totalPage:10,
-	        	tableData:[], //表格数据
-	      	};
+	    	 	const generateData = _ => {
+		        return API.APIDomain;
+		      };
+		    	return {
+		    		tableLoading: true,
+		        	//页码数据
+		        	curPage:1,
+		        	totalPage:10,
+		        	tableData:[], //表格数据
+		        	apiHead: generateData()
+		        	
+		     };
 	    },
 	    created(){
-	    	this.userInfoRequest(1);
+	    		this.itemInfoRequest(1);
 	    },
 	    methods:{
-	    	//添加跳转
-	    	createGoods(){
-	    		this.$router.push({ path: 'addgoods'})
-	    	},
-		    //编辑用户信息
-		    editUser(id, realname, nickname, phonenum, roleids){
-		    	//初始化 打开弹窗，取消Tips显示，表单数据同步更新，隐藏表单的密码框，显示并重置修改的密码框，编辑状态为true
-	    		this.addUserTips = false;
-	    		this.isEditState = true;
-	    		this.newUserVisible = true;
-	    		if(this.$refs['newUserForm']){
-	    			this.$refs['newUserForm'].resetFields();
-	    		}
-	    		
-	    		this.newUserForm = {
-	    			editId: id,
-	        		realName: realname,
-	        		nickName: nickname,
-	        		phone: phonenum,
-	        		password:'123youcannotguess',//为了让表单验证通过，需要填写一个内置密码
-	        		editPassword:'',
-	        		roles:roleids
-	        	}
+		    	//添加跳转
+		    	createGoods(){
+		    		this.$router.push({ path: 'addgoods'})
+		    	},
+		    //编辑商品信息
+		    editGoods(id){
+	    			this.$router.push({ path: 'editgoods', query:{'goodsId':id}})
 		    },
 		    
-		    //删除用户信息
-		    deleteUser(id){
-		    	this.$confirm('是否删除该商品?', '提示', {
+		    //下架
+		    deleteGoods(id){
+		    	 	this.$confirm('是否下架该商品?', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
 		          type: 'warning'
 		        }).then(() => {
-		          	this.$http.post('api/ajax/user/remove', {'id':id}, {emulateJSON: true}).then(function (response) {
-		            	this.userInfoRequest(this.curPage)
-			            }, function (response) {
-							if(response.status == 401 || response.status == 403){
-								//session过期
-								this.$router.push({ path: 'login'})
-							}
-							else{
-								alert('对不起，删除商品失败，请重新请求！');
-							}
-			            })
+		          	this.$http.put('api/admin/item/'+id, {'status':1}, {emulateJSON: true}).then(function (response) {
+		          		if(response.data.code=='000000'){
+		          			 this.$message({
+					          message: '下架成功',
+					          type: 'success'
+					        });
+					        this.itemInfoRequest(this.curPage)
+		          		}
+		            			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，下架商品失败，请重新请求！');
+						}
+		            })
+			       
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消'
+		          });          
+		        });
+		    	
+		    },
+		    
+		    //上架
+		    restoreGoods(id){
+		   	 	this.$confirm('是否上架架该分类?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		          	this.$http.put('api/admin/item/'+id, {'status':0}, {emulateJSON: true}).then(function (response) {
+		          		if(response.data.code=='000000'){
+		          			 this.$message({
+					          message: '上架成功',
+					          type: 'success'
+					        });
+					        this.itemInfoRequest(this.curPage)
+		          		}
+		            			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，上架分类失败，请重新请求！');
+						}
+		            })
 			       
 		        }).catch(() => {
 		          this.$message({
@@ -123,14 +179,84 @@
 		          });          
 		        });
 		    },
-		    //获取用户列表
-		    userInfoRequest(oPage){
-		    	var self = this;
-		    	this.tableLoading = true;
-            	self.$http.post('/goodsInfo', {}, {emulateJSON: true}).then(function (response) {
-            		this.tableLoading = false;
-              		this.tableData = response.data.goodsInfo;
-                }, function (response) {
+		    
+		    //推上广告位
+		    promoteGoods(id){
+		    		this.$confirm('是否将该商品推上广告位?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		          	this.$http.put('api/admin/item/'+id, {'index':0}, {emulateJSON: true}).then(function (response) {
+		          		if(response.data.code=='000000'){
+		          			 this.$message({
+					          message: '已成功上广告位',
+					          type: 'success'
+					        });
+					        this.itemInfoRequest(this.curPage)
+		          		}
+		            			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，操作失败，请重新请求！');
+						}
+		            })
+			       
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消'
+		          });          
+		        });
+		    },
+		    
+		    //下广告位
+		    unPromoteGoods(id){
+		    		this.$confirm('是否将该商品移出广告位?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		          	this.$http.put('api/admin/item/'+id, {'index':1}, {emulateJSON: true}).then(function (response) {
+		          		if(response.data.code=='000000'){
+		          			 this.$message({
+					          message: '已成功移出广告位',
+					          type: 'success'
+					        });
+					        this.itemInfoRequest(this.curPage)
+		          		}
+		            			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，移出失败，请重新请求！');
+						}
+		            })
+			       
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消'
+		          });          
+		        });
+		    },
+		    
+		    //获取商品列表
+		    itemInfoRequest(oPage){
+			    	var self = this;
+			    	this.tableLoading = true;
+            		self.$http.get('api/admin/items?pageNum='+oPage+'&perPage=10', {}, {emulateJSON: true}).then(function (response) {
+	        			this.tableLoading = false;
+	          		this.tableData = response.data.data;
+	          		this.totalPage = response.data.total_page*10;
+	            }, function (response) {
 					if(response.status == 401 || response.status == 403){
 						//session过期
 						this.$router.push({ path: 'login'})
@@ -139,12 +265,12 @@
 						alert('对不起，请求错误，请重新请求哦！');
 					}
 					
-                })
+	            })
 		    },
 		    //翻页
 		    changePage(val){
-		    	this.curPage = val;
-		    	this.userInfoRequest(val)
+			    	this.curPage = val;
+			    	this.itemInfoRequest(val)
 		    }
 	    }
 	};

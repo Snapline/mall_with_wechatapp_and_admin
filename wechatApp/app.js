@@ -84,9 +84,10 @@ App({
       wx.login({
         success: function (res) {
           wx.request({
-            url: API.APIDomian + 'auth/login',
+            url: API.APIDomian + 'wx/auth/login',
+            method:'POST',
             header: {
-              'content-type': 'application/json'
+              'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             },
             data: {
               code: res.code
@@ -114,9 +115,10 @@ App({
       wx.login({
         success: function (res) {
           wx.request({
-            url: API.APIDomian + 'auth/login',
+            url: API.APIDomian + '/wx/auth/login',
+            method: 'POST',
             header: {
-              'content-type': 'application/json'
+              'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             },
             data: {
               code: res.code
@@ -131,9 +133,9 @@ App({
                   typeof cb == "function" && cb(that.globalData.userInfo);
                   //向后台传输保存用户信息
                   wx.request({
-                    url: API.DOMAIN + 'user/check',
+                    url: API.APIDomian + '/wx/user/check',
                     header: {
-                      'content-type': 'application/x-www-form-urlencoded',
+                      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
                       'Cookie': that.globalData.sessionId
                     },
                     method: 'POST',
@@ -157,7 +159,7 @@ App({
                 },
                 fail: function () {
                   wx.showModal({
-                    content: '您已拒绝授权个人资料，部分功能将暂时无法使用！'
+                    content: '您已拒绝授权个人资料，部分功能将无法使用！'
                   })
                 }
               })

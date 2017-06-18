@@ -2,7 +2,7 @@
 	<div>
 		<el-breadcrumb separator="/">
 		  <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-		  <el-breadcrumb-item>分类管理</el-breadcrumb-item>
+		  <el-breadcrumb-item>订单列表</el-breadcrumb-item>
 		</el-breadcrumb>
 		<!--新建栏-->
 		<el-row style="margin-bottom:30px; margin-top:30px;">
@@ -51,10 +51,11 @@
 		    </el-table-column>
 		    
 		     <el-table-column
-		      label="操作">
+		      label="操作"
+		      min-width="150">
 		      <template scope="scope">
-		        <el-button @click="editUser(scope.row.id)" type="warning" size="small">发货</el-button>
-		        <el-button @click="deleteUser(scope.row.id)" type="danger" size="small">查询物流</el-button>
+		        <el-button @click="sendGoods(scope.row.id)" type="warning" size="small">发货</el-button>
+		        <el-button @click="checkDeliver(scope.row.id)" type="danger" size="small">查询物流</el-button>
 		      </template>
 		    </el-table-column>
 		  </el-table>

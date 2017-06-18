@@ -76,17 +76,26 @@
 	    			"name", this.newCateForm.name
 	    		)
 	    	},
-	    	'success': function (file) {
-		        console.log('传了一个文件')
+	    	'success': function (file, response) {
+		        	if(response.code == '000000'){
+		    		  this.$message({
+				          message: '添加成功，正在跳转...',
+				          type: 'success'
+				        });
+		    		 this.$router.push({ path: 'category'})
+			    	}
+			    	else{
+			    		this.$message.error('添加失败，请重试哦');
+			    	}
 		      },
-		      'process': function () {
-		        var newArr = this.$children.filter(function(item){
-		          return item.id === "myVueDropzone";
-		        });
-		        var component = newArr[0];
-		        console.log('上传了一次')
-		        component.processQueue()
-		      },
+//	      'process': function () {
+//	        var newArr = this.$children.filter(function(item){
+//	          return item.id === "myVueDropzone";
+//	        });
+//	        var component = newArr[0];
+//	        console.log('上传了一次')
+//	        component.processQueue()
+//	      },
 	    	//返回
 	    	backToCate(){
 	    		this.$router.push({ path: 'category'})
@@ -100,7 +109,7 @@
 		        
 		    },
 		    catePicsSuc(response, file, fileList){
-		    	if(response.code == '000000'){
+		    	if(response.data.code == '000000'){
 		    		  this.$message({
 				          message: '添加成功，正在跳转...',
 				          type: 'success'

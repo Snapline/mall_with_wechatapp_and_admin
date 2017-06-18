@@ -33,12 +33,21 @@
 		      prop="name"
 		      label="分类名称">
 		    </el-table-column>
+		    <el-table-column
+		      prop="status"
+		      label="下架信息">
+		       <template scope="scope">
+		        <span v-if="scope.row.status==1" style="color:red">已下架</span>
+		        <span v-else>上架中</span>
+		      </template>
+		    </el-table-column>
 		    
 		     <el-table-column
 		      label="操作">
 		      <template scope="scope">
 		        <el-button @click="editType(scope.row.id, scope.row.pic_url_resize, scope.row.name)" type="info" size="small">修改类名</el-button>
-		        <el-button @click="deleteType(scope.row.id)" type="danger" size="small">删除</el-button>
+		        <el-button v-show="scope.row.status==0" @click="deleteType(scope.row.id)" type="danger" size="small">下架</el-button>
+		        <el-button v-show="scope.row.status==1" @click="restoreType(scope.row.id)" type="success" size="small">上架</el-button>
 		      </template>
 		    </el-table-column>
 		  </el-table>
@@ -73,36 +82,76 @@
 	      	};
 	    },
 	    created(){
-	    	this.categoryRequest(1);
+	   	 	this.categoryRequest(1);
 	    },
 	    methods:{
-	    	//新建分类
-	    	createCate(){
-	    		this.$router.push({ path: 'addcategory'})
-	    	},
+		    	//新建分类
+		    	createCate(){
+		    		this.$router.push({ path: 'addcategory'})
+		    	},
 		    //编辑分类信息
 		    editType(id, catePic, cateName){
-		    	this.$router.push({ path: 'editcategory', query:{'cateId':id, 'catePic':catePic, 'cateName':cateName}})
+		    		this.$router.push({ path: 'editcategory', query:{'cateId':id, 'catePic':catePic, 'cateName':cateName}})
 		    },
 		    
 		    //删除分类信息
 		    deleteType(id){
-		    	this.$confirm('是否删除该分类?', '提示', {
+		    	this.$confirm('是否下架该分类?', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
 		          type: 'warning'
 		        }).then(() => {
-		          	this.$http.post('api/ajax/user/remove', {'id':id}, {emulateJSON: true}).then(function (response) {
-		            	this.userInfoRequest(this.curPage)
-			            }, function (response) {
-							if(response.status == 401 || response.status == 403){
-								//session过期
-								this.$router.push({ path: 'login'})
-							}
-							else{
-								alert('对不起，删除商分类失败，请重新请求！');
-							}
-			            })
+		          	this.$http.put('api/admin/category/'+id, {'status':1}, {emulateJSON: true}).then(function (response) {
+		          		if(response.data.code=='000000'){
+		          			 this.$message({
+					          message: '下架成功',
+					          type: 'success'
+					        });
+					        this.categoryRequest(this.curPage)
+		          		}
+		            			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，下架分类失败，请重新请求！');
+						}
+		            })
+			       
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消'
+		          });          
+		        });
+		    },
+		    
+		    restoreType(id){
+		   	 	this.$confirm('是否上架架该分类?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		          	this.$http.put('api/admin/category/'+id, {'status':0}, {emulateJSON: true}).then(function (response) {
+		          		if(response.data.code=='000000'){
+		          			 this.$message({
+					          message: '上架架成功',
+					          type: 'success'
+					        });
+					        this.categoryRequest(this.curPage)
+		          		}
+		            			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，上架分类失败，请重新请求！');
+						}
+		            })
 			       
 		        }).catch(() => {
 		          this.$message({
@@ -116,10 +165,11 @@
 		    categoryRequest(oPage){
 		    	var self = this;
 		    	this.tableLoading = true;
-            	self.$http.get('api/admin/categorys', {}, {emulateJSON: true}).then(function (response) {
-            		this.tableLoading = false;
-              		this.tableData = response.data.data;
-                }, function (response) {
+	        	self.$http.get('api/admin/categorys?pageNum='+oPage+'&perPage=10', {}, {emulateJSON: true}).then(function (response) {
+	        			this.tableLoading = false;
+	          		this.tableData = response.data.data;
+	          		this.totalPage = response.data.total_page*10;
+	            }, function (response) {
 					if(response.status == 401 || response.status == 403){
 						//session过期
 						this.$router.push({ path: 'login'})
@@ -128,7 +178,7 @@
 						alert('对不起，请求错误，请重新请求哦！');
 					}
 					
-                })
+	            })
 		    },
 		    //翻页
 		    changePage(val){

@@ -66,6 +66,17 @@ export default new Router({
             	}
             ]
         },
+        //修改商品
+         {
+            path: '/editgoods',
+            component: resolve => require(['../components/home.vue'], resolve),
+            children:[
+            	{
+            		path: '/',
+            		component: resolve => require(['../components/goodsAdmin/editgoods.vue'], resolve)
+            	}
+            ]
+        },
         
          //订单管理
          //订单列表

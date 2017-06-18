@@ -44,21 +44,31 @@ Page({
   },
 
   onLoad() {
+    app.getUserInfo();
     this.setData({ shop_info: app.globalData.shopInfo });
     // this.setData({banners: serviceData.bannerData, activities:serviceData.activityData, features:serviceData.featureData});
 
     var that = this;
     //获取广告牌推荐
     wx.request({
-      url: API.APIDomian + 'bannerdata',
+      url: API.APIDomian + '/wx/recommend/list',
       data: {},
-      method: 'GET',
+      method: 'POST',
       header: {
         'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
       },
       success: function (res) {
+        var arr = [];
+        var dataArr = res.data.result;
+        for(var i = 0; i<dataArr.length; i++){
+          var obj = {
+            'id': dataArr[i].id,
+            'image_url': API.APIDomian+ dataArr[i].pic_url_resize
+          }
+          arr.push(obj)
+        }
         that.setData({
-          banners: res.data
+          banners: arr
         })
 
       },
@@ -69,15 +79,18 @@ Page({
 
     //获取新品推荐
     wx.request({
-      url: API.APIDomian + 'featuredata',
-      data: {},
-      method: 'GET',
+      url: API.APIDomian + '/wx/stars/list',
+      data: {
+        'page_num':1,
+        'per_page':10
+      },
+      method: 'POST',
       header: {
         'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
       },
       success: function (res) {
         that.setData({
-          features: res.data
+          features: res.data.result.data
         })
 
       },

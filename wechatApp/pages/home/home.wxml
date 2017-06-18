@@ -6,10 +6,9 @@ upper-threshold="10"
  <view class="section swiper-container">
     <swiper indicator-dots="{{true}}" autoplay="{{true}}" interval="{{4000}}" duration="{{300}}">
       <block wx:for="{{banners}}" wx:for-item="banner">
-        <swiper-item   data-activity-id="{{banner.link_id}}" data-activity-type="{{banner.type}}"
-    data-activity-url="{{banner.link_url}}"
+        <swiper-item   data-activity-id="{{banner.id}}" 
     bindtap="navigateToActivity">
-          <image mode="aspectFill" src="{{banner.image_src}}"
+          <image mode="aspectFill" src="{{banner.image_url}}"
           ></image>
         </swiper-item>
       </block>
@@ -25,22 +24,22 @@ upper-threshold="10"
     <text>精选推荐</text>
      <!--新品features推荐内容-->
    <block  wx:for="{{features}}" wx:for-item="feature" >
-      <view wx:if="{{feature.length == 0}}" class="feature clearfix" data-goods-id="{{feature.goods_id}}">
+      <view wx:if="{{feature.length == 0}}" class="feature clearfix" data-goods-id="{{feature.id}}">
         <image mode="aspectFill" src="{{feature.image_url}}"></image>
         <view  class="sold-out-overlay">
          <text class="sold-out-tag">已售罄</text>
            </view>
         <view class="title-wrapper">
-        <label class="title">{{feature.goods_name}}</label>
+        <label class="title">{{feature.name}}</label>
        </view>
-         <label class="sold-out-price">¥ {{feature.goods_price}}</label>
+         <label class="sold-out-price">¥ {{feature.price}}</label>
         </view>
-      <view wx:else class="feature clearfix" data-goods-id="{{feature.goods_id}}" bindtap="navigateToProduct">   
+      <view wx:else class="feature clearfix" data-goods-id="{{feature.id}}" bindtap="navigateToProduct">   
        <image mode="aspectFill" src="{{feature.image_url}}"></image>
         <view class="title-wrapper">
-        <label class="title">{{feature.goods_name}}</label>
+        <label class="title">{{feature.name}}</label>
       </view>
-      <label class="price">¥ {{feature.goods_price}}</label>
+      <label class="price">¥ {{feature.price}}</label>
     </view>
     </block>
   </view>

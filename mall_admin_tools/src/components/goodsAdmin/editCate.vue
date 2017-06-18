@@ -92,9 +92,18 @@
 	    			"name", this.newCateForm.name
 	    		)
 	    	},
-	    	'success': function (file) {
-		        console.log('传了一个文件')
-		    },
+	    	'success': function (file, response) {
+		       if(response.code == '000000'){
+		    		  this.$message({
+				          message: '修改成功，正在跳转...',
+				          type: 'success'
+				        });
+		    		 this.$router.push({ path: 'category'})
+			    	}
+			    	else{
+			    		this.$message.error('修改失败，请重试哦');
+			    	}
+		   },
 	    	//返回
 	    	backToCate(){
 	    		this.$router.push({ path: 'category'})
@@ -106,7 +115,16 @@
 	    		}
 	    		else{
 	    			this.$http.put(this.editCateUrl, {'name':this.newCateForm.name}, {emulateJSON: true}).then(function (response) {
-              		
+              		if(response.data.code == '000000'){
+			    		  this.$message({
+					          message: '修改成功，正在跳转...',
+					          type: 'success'
+					        });
+			    		 this.$router.push({ path: 'category'})
+				    	}
+				    	else{
+				    		this.$message.error('修改失败，请重试哦');
+				    	}
                 }, function (response) {
 					if(response.status == 401 || response.status == 403){
 						//session过期
@@ -119,18 +137,6 @@
                 })
 	    		}
 		        
-		    },
-		    catePicsSuc(response, file, fileList){
-		    	if(response.code == '000000'){
-		    		  this.$message({
-				          message: '添加成功，正在跳转...',
-				          type: 'success'
-				        });
-		    		 this.$router.push({ path: 'category'})
-		    	}
-		    	else{
-		    		this.$message.error('添加失败，请重试哦');
-		    	}
 		    }
 	    }
 	}
