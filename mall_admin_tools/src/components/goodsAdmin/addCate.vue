@@ -31,6 +31,7 @@
 				  >
 					 <dropzone ref="dropzone" id="myVueDropzone"  url="api/admin/categorys" v-on:vdropzone-sending="addParams" v-on:vdropzone-success="success">
 					 </dropzone>
+					 <span>此类型只能上传一张!</span>
 				</el-form-item>
 				
 			  <el-form-item>

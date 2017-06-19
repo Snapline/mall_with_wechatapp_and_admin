@@ -1,90 +1,55 @@
-page{
-    background-color: #ffffff;
-    font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","\9ED1\4F53",Arial,sans-serif;
-    font-size: 32rpx;
-}
-.navigator-hover{
-    background: none;
+
+/**index.wxss**/
+.searchBox{
+  width:94%;
+  margin: 10rpx auto 20rpx;
+  height:70rpx;
+  border:5rpx solid #e3e8ee;
+   border-radius: 30rpx;
+   position: relative;
+   text-align: center;
+   line-height:70rpx;
+  background: #fff;
 }
 
-page,.main{
-    height: 100%;
-}
-.categroy-left{
-    float: left;
-    width: 150rpx;
-    height: 100%;
-    border-right: 1px solid #ddd;
-    box-sizing: border-box;
-}
-.categroy-left .cate-list{
-    height: 90rpx;
-    line-height: 90rpx;
-    text-align: center;
-    border-left: 3px solid #fff;
-}
-.categroy-left .cate-list.on{
-    color: #AB956D;
-    border-color: #AB956D;
-}
-.categroy-right{
-    float: right;
-    width: 600rpx;
-    height: 100%;
-    overflow: hidden;
-    
-}
-.cate-box{
-    height: 100%;
-    padding:40rpx;
-    box-sizing: border-box;
-}
-.cate-box .cate-banner image{
-    display: block;
-    width: 100%;
-    height: 190rpx;
-}
-.cate-title{
-    position: relative;
-    height: 30rpx;
-    line-height: 30rpx;
-    padding:30rpx 0 55rpx;
-    text-align: center;
-    color: #AB956D;
-    font-size: 34rpx;
-}
-.cate-title::before{
-    position: absolute;
-    left: 130rpx;
-    top: 43rpx;
-    content: '';
-    width: 70rpx;
-    height: 4rpx;
-    background: #AB956D;
-}
-.cate-title::after{
-    position: absolute;
-    right: 130rpx;
-    top: 43rpx;
-    content: '';
-    width: 70rpx;
-    height: 4rpx;
-    background: #AB956D;
+.searchBox icon{
+  position: absolute;
+  left:50rpx;
+  top:18rpx;
 }
 
-.product-list{
-    display: inline-block;
-    width: 160rpx;
-    height: 160rpx;
-    text-align: center;
-    margin:0 20rpx 20rpx 0;
-    font-size: 24rpx;
+
+.album_wall{
+  width: 100%;
+  margin: 30rpx auto 0;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items:  flex-end;
 }
-.product-list image{
-    width: 80rpx;
-    height: 80rpx;
-    margin-bottom: 20rpx;
+
+
+.item_album{
+  width:48%;
+  margin: 10rpx auto 20rpx ;
+  /*border:8rpx solid #fff;*/
+  box-sizing: border-box;
+  /*box-shadow: #666 0px 0px 10px; */
+  /*flex: 10 0 50%;*/
 }
-.product-list:nth-child(3n){
-    margin-right: 0;
+
+.item_album image{
+  display:inline-block;
+  width:100%;
+  vertical-align:bottom;
+}
+
+
+.album_name{
+  text-align: center;
+  margin-top:20rpx;
+  margin-bottom:40rpx;
+  display: block;
+  font-size: 30rpx;
 }

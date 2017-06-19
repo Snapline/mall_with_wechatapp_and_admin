@@ -3,7 +3,6 @@
   <div>
   	<form :action="url" class="vue-dropzone dropzone" :id="id">
   </form>
-     <span>Tips: 此类型只能上传一张~</span>
   </div>
 
 </template>

@@ -1,12 +1,12 @@
 <!--首页滚动容器-->
-<scroll-view class="page"  bindscrolltolower="lower" scroll-y="true" style="height:100%" scroll-into-view="{{toView}}"
+<scroll-view class="page"  bindscrolltolower="onReachBottom" scroll-y="true" style="height:100%" 
 upper-threshold="10"
 >
  <!--广告牌-->
  <view class="section swiper-container">
     <swiper indicator-dots="{{true}}" autoplay="{{true}}" interval="{{4000}}" duration="{{300}}">
       <block wx:for="{{banners}}" wx:for-item="banner">
-        <swiper-item   data-activity-id="{{banner.id}}" 
+        <swiper-item   data-goods-id="{{banner.id}}" 
     bindtap="navigateToActivity">
           <image mode="aspectFill" src="{{banner.image_url}}"
           ></image>
@@ -16,30 +16,34 @@ upper-threshold="10"
   </view>
 
   <!--新品推荐标题-->
+  
+  <text style="font-weight:bold; font-size:34rpx;margin-top:30rpx; margin-bottom:30rpx; margin-left:20rpx;">精选推荐</text>
   <view  class="section feature-list" >
     <!--<view class="feature-header">
       <icon><image  class="header-img" src="./images/feature.png"></image></icon>
       <text>精选推荐</text>
     </view>-->
-    <text>精选推荐</text>
      <!--新品features推荐内容-->
    <block  wx:for="{{features}}" wx:for-item="feature" >
       <view wx:if="{{feature.length == 0}}" class="feature clearfix" data-goods-id="{{feature.id}}">
-        <image mode="aspectFill" src="{{feature.image_url}}"></image>
+        <image mode="aspectFill" src="{{apiHeader+feature.pic_url_resize}}"></image>
         <view  class="sold-out-overlay">
          <text class="sold-out-tag">已售罄</text>
            </view>
         <view class="title-wrapper">
         <label class="title">{{feature.name}}</label>
        </view>
-         <label class="sold-out-price">¥ {{feature.price}}</label>
+         <label class="sold-out-price">{{feature.price}}元</label>
         </view>
+
       <view wx:else class="feature clearfix" data-goods-id="{{feature.id}}" bindtap="navigateToProduct">   
-       <image mode="aspectFill" src="{{feature.image_url}}"></image>
-        <view class="title-wrapper">
+       <image mode="aspectFill" src="{{apiHeader+feature.pic_url_resize}}"></image>
+      <view class="title-wrapper">
         <label class="title">{{feature.name}}</label>
       </view>
-      <label class="price">¥ {{feature.price}}</label>
+       <view class="title-wrapper">
+      <label class="price">{{feature.price}}元</label>
+       </view>
     </view>
     </block>
   </view>

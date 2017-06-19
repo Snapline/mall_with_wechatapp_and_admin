@@ -2,9 +2,11 @@ var API = require('../../request/API.js');
 
 Page({
   data: {
+    swipePic:[],
     product: [],
-    current: 1,
-    indicatorDots: false
+    descPics:[],
+    indicatorDots: true,
+    apiHeader: API.APIDomian
   },
   currentchange(e) {
     this.setData({
@@ -14,29 +16,69 @@ Page({
   onLoad(options) {
     const productId = options.id;
     var that = this;
+
+    //获取轮播图信息
     wx.request({
-      url: API.APIDomian + 'productInfo',
-      data: {},
-      method: 'GET',
+      url: API.APIDomian + '/wx/item/pic',
+      data: {
+        'item_id': productId
+      },
+      method: 'POST',
       header: {
         'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
       },
       success: function (res) {
         that.setData({
-          product: res.data
+          swipePic: res.data.result
         })
 
       },
       fail: function () {
-        API.failTips('广告活动请求错误，请重新请求')
+        API.failTips('宝贝信息请求失败，请重新请求')
       }
     })
-    // var product = serviceData.productData;
-    // product.goods_price = product.goods_price.toFixed(2);
-    // this.setData({
-    //   product,
-    //   wxParseData: WxParse('html', product.goods_detail)
-    // ,cartNum:2});
+
+    //获取描述信息
+    wx.request({
+      url: API.APIDomian + '/wx/item/info',
+      data: {
+        'item_id': productId
+      },
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+      },
+      success: function (res) {
+        that.setData({
+          product: res.data.result
+        })
+
+      },
+      fail: function () {
+        API.failTips('宝贝信息请求失败，请重新请求')
+      }
+    })
+
+    //获取详情图信息
+    wx.request({
+      url: API.APIDomian + '/wx/item/desc_pic',
+      data: {
+        'item_id': productId
+      },
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+      },
+      success: function (res) {
+        that.setData({
+          descPics: res.data.result
+        })
+
+      },
+      fail: function () {
+        API.failTips('宝贝信息请求失败，请重新请求')
+      }
+    })
 
   },
   onShareAppMessage(event){
@@ -48,9 +90,16 @@ Page({
         }
   },
  
-  navigateToCart() {
-    wx.switchTab({
-      url: '../cart/cart'
+  addCar(e) {
+    const productID = e.currentTarget.dataset.productid;
+    const productName = e.currentTarget.dataset.productname
+    const price = e.currentTarget.dataset.price;
+    const numTotal = e.currentTarget.dataset.storenum;
+    const soldNum = e.currentTarget.dataset.soldnum;
+    const remainNum = numTotal-soldNum;
+    console.log(remainNum)
+    wx.navigateTo({
+      url: '../addcart/addcart?productId=' + productID + '&price=' + price+'&remain='+remainNum+'&name='+productName
     });
   }
 });

@@ -39,12 +39,13 @@
 					 <dropzone ref="dropzone" id="myVueDropzone" method="put" :url="editCateUrl" v-on:vdropzone-sending="addParams"
 					 	v-on:vdropzone-file-added="(hasAddedFile=hasAddedFile+1)" v-on:vdropzone-removed-file="(hasAddedFile=hasAddedFile-1)" v-on:vdropzone-success="success">
 					 </dropzone>
+					  <span>此类型只能上传一张!</span>
 				</el-form-item>
 				
 				 <el-form-item
 				    label=""
 				  >
-			     <span>若想修改分类图片，传新的图片即可</span>
+			     <span style="color:red">若想修改分类图片，传新的图片即可</span>
 			  </el-form-item>
 				
 			  <el-form-item>

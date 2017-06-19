@@ -2,13 +2,12 @@ var API = require('../../request/API.js');
 var app = getApp();
 Page({
   data: {
-    shop_id: app.globalData.shop_id,
-    shop_info:[],
     //广告牌轮播图数组
     banners: [],
-    activities: [],
     features: [],
-    currentPage: 1,
+    bottomNum: 1,
+    hasToEnd: false,
+    apiHeader: API.APIDomian
   },
   //进入商品详情
   navigateToProduct(event) {
@@ -20,26 +19,9 @@ Page({
 
   //进入广告牌详情
   navigateToActivity(event) {
-    var activityType = event.currentTarget.dataset.activityType;
-    var activityId = event.currentTarget.dataset.activityId;
-    var activityTitle = event.currentTarget.dataset.activityTitle;
-    var activityUrl;
-    switch (activityType) {
-      case 1:
-        activityUrl = "../category-product/category-product?id=" + activityId + '&title=' + activityTitle;
-        break;
-      case 2:
-        activityUrl = "../products/products?id=" + activityId;
-        break;
-      case 3:
-        activityUrl = event.currentTarget.dataset.activityUrl;
-        break;
-      default:
-        break;
-    }
-    console.log(activityUrl);
+    var productId = event.currentTarget.dataset.goodsId;
     wx.navigateTo({
-      url: activityUrl
+      url: '../products/products?id=' + productId
     });
   },
 
@@ -78,30 +60,55 @@ Page({
     })
 
     //获取新品推荐
-    wx.request({
-      url: API.APIDomian + '/wx/stars/list',
-      data: {
-        'page_num':1,
-        'per_page':10
-      },
-      method: 'POST',
-      header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-      },
-      success: function (res) {
-        that.setData({
-          features: res.data.result.data
-        })
-
-      },
-      fail: function () {
-        API.failTips('请求失败，请重新请求')
-      }
-    })
+    getRecommends(that);
   },
   
-  lower: function() {
-    console.log('lower more features data');
-    API.failTips('下拉了哦！')
+  onReachBottom: function() {
+    if (!this.data.hasToEnd) {
+      var tempCount = this.data.bottomNum;
+      this.setData({
+        bottomNum: tempCount + 1
+      });
+      getRecommends(this)
+    }
+    else{
+      API.failTips('已经到底啦！')
+    }
+   
   }
 });
+
+function getRecommends(that){
+  wx.request({
+    url: API.APIDomian + '/wx/stars/list',
+    data: {
+      'page_num': that.data.bottomNum,
+      'per_page': 4
+    },
+    method: 'POST',
+    header: {
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    },
+    success: function (res) {
+      var resJson = res.data.result.data;
+      var previousGoodsData = that.data.features;
+      for (var i = 0; i < resJson.length; i++) {
+        previousGoodsData.push(resJson[i])
+      }
+
+      that.setData({
+        features: previousGoodsData
+      })
+
+      if (that.data.bottomNum==res.data.result.total_page){
+        that.setData({
+          hasToEnd: true
+        })
+      }
+
+    },
+    fail: function () {
+      API.failTips('请求失败，请重新请求')
+    }
+  })
+}

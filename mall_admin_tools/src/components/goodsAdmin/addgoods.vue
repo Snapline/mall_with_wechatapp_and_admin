@@ -9,7 +9,7 @@
 		  <el-col :span="24">
 		  	<div class="grid-content bg-purple-dark">
 		  	添加商品
-		  	<el-button class="newBtn" type="info" @click="createUser">返回商品列表</el-button>
+		  	<el-button class="newBtn" type="info" @click="backtoGoods">返回商品列表</el-button>
 		  	</div>
 		  </el-col>
 		</el-row>
@@ -100,6 +100,7 @@
 					</el-upload>-->
 					<dropzone ref="theme_dropzone" id="themeVueDropzone"  url="api/admin/items" v-on:vdropzone-sending="addThemeParams" v-on:vdropzone-success="themeSuccess">
 					 </dropzone>
+					  <span>此类型只能上传一张!</span>
 				</el-form-item>
 				
 				<el-form-item
@@ -108,14 +109,19 @@
 				  >
 					<multidrop ref="swipe_dropzone" id="swipeVueDropzone" url="api/admin/item_pic" v-on:vdropzone-sending="addProductParams" v-on:vdropzone-success="prodSuccess">
 					 </multidrop>
+					  <span>可以传多张图片，但是建议不要超过四张!</span>
 				</el-form-item>
 				
 				<el-form-item
 				    label="产品详情描述图"
 				    prop="pics"
 				  >
-					<dropzone ref="desc_dropzone" id="descVueDropzone"  url="api/admin/item_pic" v-on:vdropzone-sending="addDescParams" v-on:vdropzone-success="descSuccess">
+				  	<multidrop ref="desc_dropzone" id="descVueDropzone" url="api/admin/item_pic" v-on:vdropzone-sending="addDescParams" v-on:vdropzone-success="descSuccess">
+					 </multidrop>
+					  <span>可以传多张图片，需要注意上传的顺序，跟您的图文描述顺序一致</span>
+					<!--<dropzone ref="desc_dropzone" id="descVueDropzone"  url="api/admin/item_pic" v-on:vdropzone-sending="addDescParams" v-on:vdropzone-success="descSuccess">
 					 </dropzone>
+					 <span>此类型只能上传一张!</span>-->
 				</el-form-item>
 				
 			  <el-form-item>
@@ -223,6 +229,10 @@
 	    		dropzone, multidrop
 	    },
 	    methods:{
+	    		//返回商品列表
+	    		backtoGoods(){
+	    			this.$router.push({ path: 'goodslist'})
+	    		},
 	    		//主图添加附带参数
 	    		'addThemeParams':function(file,xhr,formData){
 		    		formData.append("name", this.newGoodsForm.title)

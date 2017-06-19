@@ -9,9 +9,6 @@
     margin-bottom: 0;
 }
 
-.swiper-container swiper {
-    height: 315.9rpx;
-}
 
 swiper-item image {
     width: 100%;
@@ -43,7 +40,7 @@ swiper-item image {
 
 .product-price {
     display: block;
-    color: #fc3151;
+    color: orange;
 }
 
 .product-market {
@@ -106,7 +103,7 @@ button {
     margin-left: 35rpx;
     margin-right: 55rpx;
     text-align: center;
-    background-color: #fc3151;
+    background-color: orange;
     color: #fff;
     float: right;
     font-family: -apple-system, SF UI Text, Helvetica Neue, Helvetica, Arial, sans-serif;

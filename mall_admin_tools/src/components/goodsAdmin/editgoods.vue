@@ -9,7 +9,7 @@
 		  <el-col :span="24">
 		  	<div class="grid-content bg-purple-dark">
 		  	修改商品
-		  	<el-button class="newBtn" type="info" @click="createUser">返回商品列表</el-button>
+		  	<el-button class="newBtn" type="info" @click="backtoGoods">返回商品列表</el-button>
 		  	</div>
 		  </el-col>
 		</el-row>
@@ -94,19 +94,12 @@
 				<el-form-item
 				    label="更换产品主图"
 				    prop="pics"
+				    class="red_color"
 				  >
-				    <!--<el-upload
-					  ref="goodsPic"
-					  class="upload_area"
-					  :action="newUrl"
-					  name="goodspic"
-					  method="put"
-					  :on-success="goodsPicsSuc">
-					  <el-button slot="trigger" size="small" type="primary">选择图片</el-button>
-					</el-upload>-->
 					
 					<dropzone ref="theme_dropzone" id="themeSuccess" method="put" auto-process-queue="true" :url="newUrl" v-on:vdropzone-success="themeSuccess">
 					 </dropzone>
+					  <span>直接上传一张需要替换的产品主图即可</span>
 				</el-form-item>
 				
 				<el-form-item
@@ -122,10 +115,32 @@
 				</el-form-item>
 				
 				<el-form-item
-				    label="产品详情描述图"
+				    label="更换产品轮播图"
 				    prop="pics"
 				  >
-				  <img :src="descPicUrl" />
+					 <multidrop ref="swipe_dropzone" id="swipeVueDropzone" auto-process-queue="true" url="api/admin/item_pic" v-on:vdropzone-sending="addProductParams" v-on:vdropzone-success="prodSuccess">
+					 </multidrop>
+					  <span>直接上传新的轮播图即可</span>
+				</el-form-item>
+				
+				<el-form-item
+				    label="产品详情描述图"
+				    prop="pics"
+				    style="width:900px;"
+				  >
+				   <div class="swipe" v-for="item in descPics">
+				  	<i class="el-icon-close" style="position:absolute;" @click="deleteDesc(item.id)"></i>
+				  	 <img :src="item.desc_pic_url_resize" />
+				  </div>
+				</el-form-item>
+				
+				<el-form-item
+				    label="更换详情描述图"
+				    prop="pics"
+				  >
+				  <multidrop ref="desc_dropzone" id="descVueDropzone" auto-process-queue="true" url="api/admin/item_pic" v-on:vdropzone-sending="addDescParams" v-on:vdropzone-success="descSuccess">
+					 </multidrop>
+					  <span>直接上传新的详情描述图即可</span>
 				</el-form-item>
 				
 			  <el-form-item>
@@ -192,7 +207,9 @@
 	        	},
 	        	cateList:[],
 	        	theme_pic:'',
+	        	descPicUrl:'',
 	        	swipePics: [],
+	        	descPics: [],
 	        	//之后的文件传输地址
 	        	newId:0,
 	        	 	apiHead: generateData(),
@@ -216,26 +233,6 @@
 	    			//获取原来的信息
 	    			const goodsId = this.$route.query.goodsId;
 	    			this.goodsId = goodsId;
-	    			this.$http.get('api/admin/item/'+goodsId, {}, {emulateJSON: true}).then(function (response) {
-	    				this.newGoodsForm.name = response.data.data.name;
-	    				this.newGoodsForm.description = response.data.data.description;
-	    				this.newGoodsForm.category_id = response.data.data.category_id;
-	    				this.newGoodsForm.price = response.data.data.price;
-	    				this.newGoodsForm.num = response.data.data.num;
-	    				this.newGoodsForm.sales_num = response.data.data.sales_num;
-	    				this.newGoodsForm.comment = response.data.data.comment;
-	    				this.newGoodsForm.recommend = response.data.data.recommend;
-	    				this.theme_pic = this.apiHead+response.data.data.pic_url_resize;
-	            }, function (response) {
-					if(response.status == 401 || response.status == 403){
-						//session过期
-						this.$router.push({ path: 'login'})
-					}
-					else{
-						alert('对不起，请求错误，请重新请求哦！');
-					}
-					
-	            })
 	    			//获取分类信息
 	    		 	this.$http.get('api/admin/categorys?pageNum=1&perPage=100', {}, {emulateJSON: true}).then(function (response) {
 	        			var cateArr = response.data.data;
@@ -259,31 +256,107 @@
 					}
 					
 	            })
+	    		 	//获取基本信息
+	    		 	this.getBasicInfo()
 	    		 	
 	    		 	//获取轮播图
 	    		 	this.getSwipePics();         
-	            //获取描述图
-	    		 	this.$http.get('api/admin/item_pic?type=desc&id='+goodsId, {}, {emulateJSON: true}).then(function (response) {
-	        			this.descPicUrl =  this.apiHead+response.data.data[0].pic_url_resize;
-	            }, function (response) {
-					if(response.status == 401 || response.status == 403){
-						//session过期
-						this.$router.push({ path: 'login'})
-					}
-					else{
-						alert('对不起，请求错误，请重新请求哦！');
-					}
-					
-	            })
+	           		 //获取描述图
+	    		 	this.getDescPic();
 	    },
 	    components:{
 	    		dropzone, multidrop
 	    },
 	    methods:{
+	    		//返回商品列表
+	    		backtoGoods(){
+	    			this.$router.push({ path: 'goodslist'})
+	    		},
+	    		
+	    		//更换主图成功
+	    		'themeSuccess':function(file,response){
+	    			if(response.code=='000000'){
+	    				this.$message({
+				          message: '产品主图更换成功',
+				          type: 'success'
+				    	});
+				    	
+				    	this.getBasicInfo();
+				    	this.$refs.theme_dropzone.removeAllFiles()
+	    			}
+	    		},
+	    		
+	    		//轮播图添加之前
+	    		'addProductParams':function(file,xhr,formData){
+			      	formData.append("id", this.goodsId);
+			    	formData.append("type", 'product');
+			    },
+			    
+			    //轮播图添加成功
+			    'prodSuccess':function (file, response) {
+		        	if(response.code == '000000'){
+		    		  	this.$message({
+				          message: '轮播图修改成功',
+				          type: 'success'
+				       	});
+				       	this.getSwipePics();
+				    	this.$refs.swipe_dropzone.removeAllFiles()
+			    	}
+			    	else{
+			    		this.$message.error('产品描述图修改失败，请重试哦');
+			    	}
+		      	},
+	    		
+	    		//描述图添加之前
+	    		'addDescParams':function(file,xhr,formData){
+			      	formData.append("id", this.goodsId);
+			    	formData.append("type", 'desc');
+			    },
+			    
+			    //描述图添加成功
+			    'descSuccess': function (file, response) {
+		        	if(response.code == '000000'){
+		    		  	this.$message({
+				          message: '描述图修改成功',
+				          type: 'success'
+				       	});
+				       	this.getDescPic();
+				    	this.$refs.desc_dropzone.removeAllFiles()
+			    	}
+			    	else{
+			    		this.$message.error('产品描述图修改失败，请重试哦');
+			    	}
+		      	},
+	    		
+	    		//获取基本信息和主图
+	    		getBasicInfo(){
+		    		this.$http.get('api/admin/item/'+this.goodsId, {}, {emulateJSON: true}).then(function (response) {
+		    				this.newGoodsForm.name = response.data.data.name;
+		    				this.newGoodsForm.description = response.data.data.description;
+		    				this.newGoodsForm.category_id = response.data.data.category_id;
+		    				this.newGoodsForm.price = response.data.data.price;
+		    				this.newGoodsForm.num = response.data.data.num;
+		    				this.newGoodsForm.sales_num = response.data.data.sales_num;
+		    				this.newGoodsForm.comment = response.data.data.comment;
+		    				this.newGoodsForm.recommend = response.data.data.recommend;
+		    				this.theme_pic = this.apiHead+response.data.data.pic_url_resize;
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，请求错误，请重新请求哦！');
+						}
+						
+		            })
+	    		},
+	    		
 	    		//获取轮播图
 	    		getSwipePics(){
 	    			this.$http.get('api/admin/item_pic?type=product&id='+this.goodsId, {}, {emulateJSON: true}).then(function (response) {
 	    				var swipeArr = response.data.data;
+	    				this.swipePics=[];
 	    				for(var i =0 ;i<swipeArr.length; i++){
 	    					var obj = {
 	    						'id': swipeArr[i].id,
@@ -291,57 +364,116 @@
 	    					}
 	    					this.swipePics.push(obj);
 	    				}
-	            }, function (response) {
-					if(response.status == 401 || response.status == 403){
-						//session过期
-						this.$router.push({ path: 'login'})
-					}
-					else{
-						alert('对不起，请求错误，请重新请求哦！');
-					}
-					
-	            });
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，请求错误，请重新请求哦！');
+						}
+						
+		            });
 
 	    		},
-	    		//删除图片
+	    		
+	    		//获取描述图
+	    		getDescPic(){
+	    			this.$http.get('api/admin/item_pic?type=desc&id='+this.goodsId, {}, {emulateJSON: true}).then(function (response) {
+	    				var descPicArr = response.data.data;
+	    				this.descPics = [];
+	    				for(var i =0 ;i<descPicArr.length; i++){
+	    					var obj = {
+	    						'id': descPicArr[i].id,
+	    						'desc_pic_url_resize': this.apiHead+descPicArr[i].pic_url_resize
+	    					}
+	    					this.descPics.push(obj);
+	    				}
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，请求错误，请重新请求哦！');
+						}
+						
+		            })
+	    		},
+	    		
+	    		//删除轮播图片
 	    		deleteSwipe(id){
 	    			var _this = this;
 	    			this.$confirm('是否删除该商品图片?', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消',
-		          type: 'warning'
-		        }).then(() => {
-		        		_this.$http.delete('api/admin/item_pic?id='+_this.goodsId+'&item_pic_id='+id+'&type=product', {}, {emulateJSON: true}).then(function (response) {
-	        			if(response.data.code=='000000'){
-	        				_this.$message({
-				          message: '删除成功',
-				          type: 'success'
-				       });
-	        				_this.getSwipePics()
-	        			}
-	        			
-	            }, function (response) {
-					if(response.status == 401 || response.status == 403){
-						//session过期
-						this.$router.push({ path: 'login'})
-					}
-					else{
-						alert('对不起，删除失败，请重新请求哦！');
-					}
-					
-	            });
-			       
-		        }).catch(() => {
-		          this.$message({
-		            type: 'info',
-		            message: '已取消'
-		          });          
-		        });
-	    			
-	    			
+			          confirmButtonText: '确定',
+			          cancelButtonText: '取消',
+			          type: 'warning'
+			        }).then(() => {
+			        		_this.$http.delete('api/admin/item_pic?id='+_this.goodsId+'&item_pic_id='+id+'&type=product', {}, {emulateJSON: true}).then(function (response) {
+		        			if(response.data.code=='000000'){
+		        				_this.$message({
+					          message: '删除成功',
+					          type: 'success'
+					       });
+		        				_this.getSwipePics()
+		        			}
+		        			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，删除失败，请重新请求哦！');
+						}
+						
+		            });
+				       
+			        }).catch(() => {
+			          this.$message({
+			            type: 'info',
+			            message: '已取消'
+			          });          
+			        });
 	    		},
 	    		
-    			submitForm(formName) {
+	    		//删除描述图
+	    		deleteDesc(id){
+	    			var _this = this;
+	    			this.$confirm('是否删除该描述图片?', '提示', {
+			          confirmButtonText: '确定',
+			          cancelButtonText: '取消',
+			          type: 'warning'
+			        }).then(() => {
+			        		_this.$http.delete('api/admin/item_pic?id='+_this.goodsId+'&item_pic_id='+id+'&type=desc', {}, {emulateJSON: true}).then(function (response) {
+		        			if(response.data.code=='000000'){
+		        				_this.$message({
+						          message: '删除成功',
+						          type: 'success'
+						       });
+		        				_this.getDescPic()
+		        			}
+		        			
+		            }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，删除失败，请重新请求哦！');
+						}
+						
+		            });
+				       
+			        }).catch(() => {
+			          this.$message({
+			            type: 'info',
+			            message: '已取消'
+			          });          
+			        });
+	    		},
+	    		
+    		submitForm(formName) {
 	          var _this = this;
 	        	  	this.$refs[formName].validate((valid) => {
 		          if (valid) {
@@ -443,5 +575,9 @@
 		margin: 10px;
 		width:150px;
 		height:150px;
+	}
+	
+	.red_color .el-form-item__label{
+		color:red !important;
 	}
 </style>

@@ -1,48 +1,76 @@
-import request from "../../lib/request";
-const app = getApp();
-import serviceData from '../../data/config';
-
+var API = require('../../request/API.js');
 Page({
-    data : {
-        products:[],
-        currentPage:1,
-        perPage : 5
-    },
-    onLoad(option){
-        var categoryId = option.id;
-        var pageData = new Object();
-        pageData.page = this.data.currentPage;
-        pageData.per_page = this.data.perPage;
-        //request({path:'/categories/' + categoryId + '/products', data: pageData})
-        //.then(({data:products}) => this.setData({products}));
-        this.setData({products: serviceData.categoryData});
-        /*wx.setNavigationBarTitle({
-          title: option.title,
-          success: function(res) {
-            // success
-          }
-        })*/
-    },
-    navigateToProduct(event) {
-        var productId = event.currentTarget.dataset.goodsId;
-        wx.navigateTo({
-        url: '../products/products?id=' + productId
-        });
-    },
-    lower : function(option){
-        var categoryId = option.id;
-        console.log('lower more products data');
-        wx.showNavigationBarLoading();
-        var that = this;
-        setTimeout(()=>{
-            wx.hideNavigationBarLoading();
-            var nextPageData = new Object();
-            nextPageData.per_page = this.data.perPage;
-            nextPageData.page = this.data.currentPage +1;
-            var products = serviceData.categoryData;
-            this.setData({currentPage:++this.data.currentPage});
-            this.setData({products:this.data.products.concat(products)});//concat 拼接在一起
-
-      }, 1000);
+  data: {
+    features: [],
+    bottomNum: 1,
+    hasToEnd: false,
+    cateName: '',
+    apiHeader: API.APIDomian
   },
+  //进入商品详情
+  navigateToProduct(event) {
+    var productId = event.currentTarget.dataset.goodsId;
+    wx.navigateTo({
+      url: '../products/products?id=' + productId
+    });
+  },
+
+  onLoad(options) {
+    this.setData({
+      cateName: options.name
+    });
+    var that = this;
+    //获取商品
+    getGoodsByCate(that, options.cateId);
+  },
+
+  onReachBottom: function () {
+    if (!this.data.hasToEnd) {
+      var tempCount = this.data.bottomNum;
+      this.setData({
+        bottomNum: tempCount + 1
+      });
+      getRecommends(this)
+    }
+    else {
+      API.failTips('没有更多啦！')
+    }
+
+  }
 });
+
+function getGoodsByCate(that, cateId) {
+  wx.request({
+    url: API.APIDomian + '/wx/category/item',
+    data: {
+      'page_num': that.data.bottomNum,
+      'per_page': 10,
+      'category_id': cateId
+    },
+    method: 'POST',
+    header: {
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    },
+    success: function (res) {
+      var resJson = res.data.result.data;
+      var previousGoodsData = that.data.features;
+      for (var i = 0; i < resJson.length; i++) {
+        previousGoodsData.push(resJson[i])
+      }
+
+      that.setData({
+        features: previousGoodsData
+      })
+
+      if (that.data.bottomNum == res.data.result.total_page) {
+        that.setData({
+          hasToEnd: true
+        })
+      }
+
+    },
+    fail: function () {
+      API.failTips('请求失败，请重新请求')
+    }
+  })
+}

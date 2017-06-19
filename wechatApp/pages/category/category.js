@@ -1,51 +1,75 @@
-// import request from '../../lib/request';
-// import serviceData from '../../data/config';
-
-// Page({
-//   data: {
-//     categories: []
-//   },
-//   navigateToCategoryProduct(event) {
-//     var categoryId = event.currentTarget.dataset.cateId;
-//     wx.navigateTo({
-//       url: '../category-product/category-product?id=' + categoryId,
-//     })
-//   },
-//   onLoad() {
-//       this.setData({ categories: serviceData.cateData});
-//   }
-// });
 
 var API = require('../../request/API.js');
+
+//获取应用实例
+var app = getApp()
 Page({
   data: {
-    category: [
-      { name: '弥勒', id: 'm1' },
-      { name: '达摩', id: 'm2' },
-      { name: '金刚', id: 'm3' }
-    ],
-    detail: [],
-    curIndex: 0,
-    toView: '1'
+    albumArray: [],
+    showArr: [],
+    hasType: false,
+    hasNoAlbum: false,
+    bottomNum: 1,
+    hasToEnd: false,
+    apiHeader: API.APIDomian
   },
-  onReady() {
-    var self = this;
-    wx.request({
-      url: API.APIDomian + 'catedata',
-      success(res) {
-        console.log(res.data)
-        self.setData({
-          detail: res.data
+  //进入类别详情
+  showGoodsInCate: function (e) {
+    var targetAlbumId = e.target.dataset.id;
+    var targetAlbumName = e.target.dataset.name;
+    console.log(targetAlbumId)
+    wx.navigateTo({
+      url: '../category-product/category-product?cateId=' + targetAlbumId + '&name=' + targetAlbumName
+    })
+  },
+
+  onReachBottom: function () {
+    //到底刷新  
+    if (!this.data.hasToEnd) {
+      var tempCount = this.data.bottomNum;
+      this.setData({
+        bottomNum: tempCount + 1
+      });
+      getAlbums(this)
+    }
+  },
+
+  onLoad: function () {
+    var that = this;
+    getAlbums(that)
+  }
+})
+
+function getAlbums(that) {
+  wx.request({
+    url: API.APIDomian + '/wx/category/list',
+    header: {
+      'content-type': 'application/x-www-form-urlencoded'
+    },
+    method: 'POST',
+    data: {
+      'page_num': that.data.bottomNum,
+      'per_page': 10
+    },
+    success: function (res) {
+      var resJson = res.data.result.data;
+      var previousCateData = that.data.albumArray;
+      for (var i = 0; i < resJson.length; i++) {
+        previousCateData.push(resJson[i])
+      }
+
+      that.setData({
+        albumArray: previousCateData
+      })
+
+      if (that.data.bottomNum == res.data.result.total_page) {
+        that.setData({
+          hasToEnd: true
         })
       }
-    });
-
-  },
-  switchTab(e) {
-    this.setData({
-      toView: e.target.dataset.id,
-      curIndex: e.target.dataset.index
-    })
-  }
-
-})
+    },
+    fail: function (e) {
+      API.failTips('类别请求失败，请重新请求')
+    }
+  })
+}

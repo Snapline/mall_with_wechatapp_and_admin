@@ -1,0 +1,25 @@
+
+
+<view class="title_row">商品和数量</view>
+
+<view class="item_row">
+  <text>{{productName}}</text>
+  <text class="price">{{price}}元</text>
+  <text style="clear:both;"></text>
+</view>
+
+
+<view class="item_row">
+  <view style="display:inline-block;vertical-align:middle;height:140rpx;">购买数量</view>
+
+<view class="pick_area">
+  <view class="box" style="position:relative;">
+
+    <view class="minus"><image src="../../../images/minus.png" mode="scaleToFill" style="width:70rpx; height:70rpx" bindtap="minusNumber"></image></view>
+    <text style="">{{buyNumber}}</text>
+    <view class="plus"><image src="../../../images/plus.png" mode="scaleToFill" style="width:70rpx; height:70rpx" bindtap="addNumber"></image></view>
+    </view>
+  </view>
+</view>
+ <button class="add-car" bindtap="addCar">加入购物车</button>
+  <button class="cancel-car" bindtap="cancelCar">取消</button>

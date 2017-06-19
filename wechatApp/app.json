@@ -1,9 +1,10 @@
 {
   "pages":[
     "pages/home/home",
-    "pages/category-product/category-product",    
     "pages/category/category",
+    "pages/category-product/category-product",    
     "pages/cart/cart",
+    "pages/addcart/addcart",
     "pages/user/user",
     "pages/products/products",
     "pages/orders/orders",
@@ -28,7 +29,7 @@
     "color": "#000",
     "borderStyle": "white",
     "backgroundColor": "#fff",
-    "selectedColor": "#fc3151",
+    "selectedColor": "#ffa500",
     "list": [{
       "pagePath": "pages/home/home",
       "iconPath": "images/home.png",

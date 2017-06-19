@@ -1,12 +1,20 @@
-<scroll-view class="product-list"  bindscrolltolower="lower" scroll-y="true" style="height:100%" scroll-into-view="{{toView}}"
-upper-threshold="10">
-<view class="product-group">
-    <view class="product" wx:for="{{products}}" wx:for-item="product" data-goods-id="{{product.id}}" bindtap="navigateToProduct">  
-      <view><image mode="scaleToFill" src="{{product.covers_image}}"></image></view>
-      <view class="product-content product-name"><text>{{product.goods_name}}</text></view>
-      <view class="product-content product-price"><text>¥ {{product.goods_price}}</text>
-      <text class="product-market">¥ {{product.market_price}}</text>
+ <text style="font-weight:bold; font-size:34rpx;margin-top:30rpx; margin-bottom:30rpx; margin-left:20rpx;">类别： {{cateName}}</text>
+  <view  class="section feature-list" >
+
+          <view wx:if="{{features.length == 0}}" class="feature clearfix" data-goods-id="{{feature.id}}">
+         <text>该类别下暂无商品</text>
+        </view>
+   <block  wx:for="{{features}}" wx:for-item="feature" >
+
+
+      <view wx:if="{{features.length > 0}}" class="feature clearfix" data-goods-id="{{feature.id}}" bindtap="navigateToProduct">   
+       <image mode="aspectFill" src="{{apiHeader+feature.pic_url_resize}}"></image>
+      <view class="title-wrapper">
+        <label class="title">{{feature.name}}</label>
       </view>
+       <view class="title-wrapper">
+      <label class="price">{{feature.price}}元</label>
+       </view>
     </view>
+    </block>
   </view>
-</scroll-view>
