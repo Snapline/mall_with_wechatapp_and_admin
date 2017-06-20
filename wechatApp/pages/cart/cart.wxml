@@ -18,7 +18,7 @@
                     <icon type="{{product.status ? 'success' : 'circle'}}" color="{{product.status ? 'orange' : ''}}" size="20" bindtap="selectProduct" data-checked-status="{{checkedStatus}}" data-id="{{product.id}}"></icon>
                 </view>
                 <view class="img">
-                    <image class="image" src="{{product.thumb_url}}" mode="scaleToFill"></image>
+                    <image class="image" src="{{apiHeader+product.pic_url_resize}}" mode="scaleToFill"></image>
                 </view>
                 <view class="param">
                     <view class="title">
@@ -28,9 +28,9 @@
                         <text>{{product.goods_attr}}</text>
                     </view>-->
                     <view class="quantity">
-                        <view class="btn-ad {{product.decr_class}}" bindtap="changeNumber" data-id="{{product.id}}" data-type="min">-</view>
-                        <view class="count">{{product.goods_number}}</view>
-                        <view class="btn-ad {{product.plus_class}}" bindtap="changeNumber" data-id="{{product.id}}" data-type="plus">+</view>
+                        <view class="btn-ad" bindtap="changeNumber" data-id="{{product.id}}" data-type="minus" data-store="{{product.kc}}">-</view>
+                        <view class="count">{{product.num}}</view>
+                        <view class="btn-ad" bindtap="changeNumber" data-id="{{product.id}}" data-type="plus" data-store="{{product.kc}}">+</view>
                     </view>
                     <view class="price">
                         <view class="real">￥ {{product.real_price}}</view>

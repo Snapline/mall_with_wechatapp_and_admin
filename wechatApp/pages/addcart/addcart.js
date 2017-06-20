@@ -1,5 +1,6 @@
 // pages/addcart/addcart.js
 var API = require('../../request/API.js');
+var app = getApp();
 Page({
 
   data: {
@@ -48,12 +49,16 @@ Page({
       },
       method: 'POST',
       header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Cookie': app.globalData.sessionId
       },
       success: function (res) {
-        wx.navigateTo({
-          url: '../cart/cart'
-        });
+        if (res.data.resp_code == '000000'){
+          wx.switchTab({
+            url: '../cart/cart'
+          });
+        }
+        
 
       },
       fail: function () {
