@@ -5,6 +5,7 @@ Page({
   data: {
     loading: true,
     cartList: [],
+    bottomNum: 1,
     totalNumber: 0, //一共有多少件商品
     totalPrice: 0, //总价
     checkedStatus: true, //全选
