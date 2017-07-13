@@ -291,6 +291,7 @@
 				          message: '描述图上传成功',
 				          type: 'success'
 				       });
+				       this.$router.push({ path: 'goodslist'})
 			    	}
 			    	else{
 			    		this.$message.error('产品描述图上传失败，请重试哦');
