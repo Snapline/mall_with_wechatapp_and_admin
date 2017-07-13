@@ -74,7 +74,7 @@ swiper-item image {
   position: relative;*/
 
     width:48%;
-  margin: 0 auto ;
+  margin: 1% ;
   box-sizing: border-box;
   background-color: white;
 }

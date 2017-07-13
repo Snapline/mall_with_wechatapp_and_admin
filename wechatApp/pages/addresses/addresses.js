@@ -1,5 +1,7 @@
 import resource from '../../lib/resource';
 import tips from '../../lib/tips';
+var app = getApp();
+var API = require('../../request/API.js');
 
 Page({
   data: {
@@ -13,33 +15,26 @@ Page({
   },
 
   addAddress(e){
-    wx.chooseAddress({
-      success: function (res) {
-        console.log(res.userName)
-        console.log(res.postalCode)
-        console.log(res.provinceName)
-        console.log(res.cityName)
-        console.log(res.countyName)
-        console.log(res.detailInfo)
-        console.log(res.nationalCode)
-        console.log(res.telNumber)
-      }
-    })
+    wx.navigateTo({
+      url: '../address-edit/address-edit'
+    });
   },
 
+  // 设置默认地址
   setDefaultStyle(list, id) {
     list.forEach((itm) => {
       if (itm) {
-        itm.items.is_default = +itm.address_id === id;
+        itm.items.is_default = +itm.id === id;
         itm.items.iconType = itm.items.is_default ? 'success' : 'circle';
-        itm.items.iconColor = itm.items.iconType === 'success' ? '#FF2D4B' : '';
+        itm.items.iconColor = itm.items.iconType === 'success' ? 'orange' : '';
       }
     });
   },
+  //编辑地址
   goEdit(event) {
     const id = event.target.dataset.addressId;
     wx.navigateTo({
-      url: `../address-edit/address-edit?id=${id}`
+      url: '../address-edit/address-edit?id='+id
     });
   },
   delete(event) {
@@ -69,30 +64,46 @@ Page({
       });
     });
   },
+
   setDefault(event) {
     const checkedId = +event.currentTarget.dataset.valueId || +event.detail.value;
     let setFlag = false;
+    const that = this;
     resource.loadingToast();
-    resource.setDefaultAddress(checkedId).then((res) => {
-      if (res.statusCode === 200) {
-        setFlag = true;
-        this.setDefaultStyle(this.data.addressesList, checkedId);
-        this.setData({ addressesList: this.data.addressesList });
-      } else {
-        setFlag = false;
-      }
-      return setFlag;
-    }).then((flag) => {
-      if (flag) {
-        wx.showToast({
+    wx.request({
+      url: API.APIDomian + '/wx/address/modify',
+      data: {
+        'is_default':0,
+        'id': checkedId
+      },
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Cookie': app.globalData.sessionId
+      },
+      success: function (res) {
+        if(res.data.resp_code=='000000'){
+          setFlag = true;
+          that.setDefaultStyle(that.data.addressesList, checkedId);
+          that.setData({ addressesList: that.data.addressesList });
+
+          wx.showToast({
           title: '默认地址设置成功',
-          icon: 'success'
-        });
-      } else {
-        // wx.failToast();
+           icon: 'success'
+         });
+        }
+        else{
+          wx.failToast();
+        }
+      },
+      fail: function () {
+        API.failTips('地址信息请求错误，请重新请求')
       }
-    });
+    })
+
+ 
   },
+
   onLoad() {
     tips.toast(this.data.tipsData);
     const tipsData = {
@@ -109,31 +120,46 @@ Page({
         tipsData
       });
     }, 3000);
-    resource.fetchAddresses().then((res) => {
-      console.log(res.data);
-      if (res.data) {
-        res.data.forEach((itm) => {
-          itm.overlayConfirm = false;
-          itm.items = {
-            id: itm.address_id,
-            is_default: itm.is_default,
-            isgroup: true,
-            labelText: '设置为默认',
-            iconType: itm.is_default ? 'success' : 'circle'
-          };
-          itm.items.iconColor = itm.items.iconType === 'success' ? '#FF2D4B' : '';
-        });
-        console.log(res);
-        this.setData({
-          addressesList: res.data,
-          loading: false
-        });
-      } else {
-        this.setData({
-          addressesList: [],
-          loading: false
-        });
+
+    var that = this;
+    wx.request({
+      url: API.APIDomian + '/wx/address/query_all',
+      data: {},
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Cookie': app.globalData.sessionId
+      },
+      success: function (res) {
+        console.log(res.data.data)
+        if (res.data.data) {
+          res.data.data.forEach((itm) => {
+            itm.overlayConfirm = false;
+            itm.items = {
+              id: itm.id,
+              is_default: itm.is_default,
+              isgroup: true,
+              labelText: '设置为默认',
+              iconType: itm.is_default ? 'circle' : 'success'
+            };
+            itm.items.iconColor = itm.items.iconType === 'success' ? 'orange' : '';
+          });
+          console.log(res);
+          that.setData({
+            addressesList: res.data.data,
+            loading: false
+          });
+        } else {
+          that.setData({
+            addressesList: [],
+            loading: false
+          });
+        }
+      },
+      fail: function () {
+        API.failTips('地址信息请求错误，请重新请求')
       }
-    });
+    })
+
   }
 });

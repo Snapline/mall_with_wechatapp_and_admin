@@ -1,6 +1,6 @@
 {
   "pages":[
-    "pages/addresses/addresses",
+    
     "pages/home/home",
     "pages/category/category",
     "pages/category-product/category-product",    
@@ -13,6 +13,7 @@
     "pages/address-edit/address-edit",
     "pages/order-detail/order-detail",
     "pages/feedback/feedback",
+    "pages/addresses/addresses",
     "pages/about/about",
     "pages/user/user-info/user-info",
     "pages/user/user-info/tel-bind/tel-bind",

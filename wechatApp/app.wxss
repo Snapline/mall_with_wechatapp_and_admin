@@ -69,7 +69,7 @@ page {
     height: 1.7rem;
     line-height: 1.7rem;
     bottom: 0.5rem;
-    background-color: #FF2D4B;
+    background-color: orange;
     color: #FFF;
     text-align: center;
     border-radius: 0.2rem;
@@ -115,16 +115,16 @@ page {
 }
 .operation image {
     display: block;
-    height: 0.75rem;
+    height: 0.9rem;
     margin-top: 0.5rem;
     float: right;
-    width: 2.3rem;
+    width: 2.5rem;
 }
 .operation radio {
     display: none;
 }
 .operation .labelText {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     color: #A0A0A0;
     margin-left: 0.5rem;
 }

@@ -1,6 +1,8 @@
 import resource from '../../lib/resource';
 import city from '../../lib/city';
 import tips from '../../lib/tips';
+var app = getApp();
+var API = require('../../request/API.js');
 
 Page({
   data: {
@@ -23,7 +25,7 @@ Page({
   },
   setDefault() {
     const isDefault = this.data.items.is_default;
-    const iconColor = !this.data.items.is_default ? '#FF2D4B' : '';
+    const iconColor = !this.data.items.is_default ? 'orange' : '';
 
     this.setData({
       items: {
@@ -39,21 +41,50 @@ Page({
     var that = this;
  
     if (options.id) {
-      resource.fetchDetailAddress(options.id).then((res) => {
-        this.data.items.is_default = res.data.is_default;
-        this.setData({
-          consignee: res.data.consignee,
-          mobile: res.data.mobile,
-          county: res.data.county,
-          province: res.data.province,
-          city: res.data.city,
-          address: res.data.address,
-          loading: false,
-          items: this.data.items
-        });
-        //this.setDefault();
+      wx.request({
+        url: API.APIDomian + '/wx/address/query_by_id',
+        data: {
+          'id': options.id
+        },
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'Cookie': app.globalData.sessionId
+        },
+        success: function (res) {
+          that.data.items.is_default = res.data.data[0].is_default;
+          that.setData({
+            name: res.data.data[0].name,
+            phone: res.data.data[0].phone,
+            county: res.data.data[0].county,
+            province: res.data.data[0].province,
+            city: res.data.data[0].city,
+            street: res.data.data[0].street,
+            loading: false
+          });
+          //this.setDefault();
           city.init(that);
-      });
+        },
+        fail: function () {
+          API.failTips('购物车信息请求错误，请重新请求')
+        }
+      })
+
+      // resource.fetchDetailAddress(options.id).then((res) => {
+      //   this.data.items.is_default = res.data.is_default;
+      //   this.setData({
+      //     consignee: res.data.consignee,
+      //     mobile: res.data.mobile,
+      //     county: res.data.county,
+      //     province: res.data.province,
+      //     city: res.data.city,
+      //     address: res.data.address,
+      //     loading: false,
+      //     items: this.data.items
+      //   });
+      //   //this.setDefault();
+      //     city.init(that);
+      // });
     } else {
         city.init(that);
     }
@@ -92,29 +123,49 @@ Page({
     if (this.data.consignee.length < 2) { that.showToast('收货人姓名限制为2~15个字符'); return; }
     if (!this.data.mobile) { that.showToast('手机号不能为空'); return; }
     if (!/^1[3|4|5|7|8]\d{9}$/.test(this.data.mobile)) { that.showToast('手机格式有误，请重新输入'); return; }
-     if (this.data.city.provinceIndex == 0) { that.showToast('省市地址不能为空'); return; }
+     //if (this.data.city.provinceIndex == 0) { that.showToast('省市地址不能为空'); return; }
     if (!this.data.address) { that.showToast('街道地址不能为空'); return; }
     if (this.data.address.length < 5) { that.showToast('街道地址字数必须在5~60之间'); return; }
 
-    console.log(this.data.city);
-    const data = {
-      consignee: this.data.consignee,
-      province: this.data.addressSelect.provinceIdx[this.data.addressSelect.provinceIndex],
-      city: this.data.addressSelect.cityIdx[this.data.addressSelect.provinceIndex][this.data.addressSelect.cityIndex],
-      county: this.data.addressSelect.districtIdx[this.data.addressSelect.cityIdx[this.data.addressSelect.provinceIndex][this.data.addressSelect.cityIndex]][this.data.addressSelect.districtIndex],
-      address: this.data.address,
-      mobile: this.data.mobile,
-      is_default: this.data.items.is_default ? 1 : 0
-    };
-    resource.postDetailAddress(this.data.addressid, data).then((res) => {
-      if (res.statusCode === 200 || res.statusCode === 201) {
-        resource.successToast(() => {
-          wx.navigateTo({
-            url: '../addresses/addresses'
-          });
-        });
-      } else { console.log(res); }
-    });
+    // console.log(this.data.city);
+    // const data = {
+    //   consignee: this.data.consignee,
+    //   province: this.data.addressSelect.provinceIdx[this.data.addressSelect.provinceIndex],
+    //   city: this.data.addressSelect.cityIdx[this.data.addressSelect.provinceIndex][this.data.addressSelect.cityIndex],
+    //   county: this.data.addressSelect.districtIdx[this.data.addressSelect.cityIdx[this.data.addressSelect.provinceIndex][this.data.addressSelect.cityIndex]][this.data.addressSelect.districtIndex],
+    //   address: this.data.address,
+    //   mobile: this.data.mobile,
+    //   is_default: this.data.items.is_default ? 1 : 0
+    // };
+
+
+    wx.request({
+      url: API.APIDomian + '/wx/address/add',
+      data: {
+        'name': this.data.consignee,
+        'phone': this.data.mobile,
+        'province': this.data.addressSelect.selectedProvince,
+        'city': this.data.addressSelect.selectedCity,
+        'county': this.data.addressSelect.selectedDistrct,
+        'street': this.data.address,
+        'details':'',
+        'is_default': this.data.items.is_default ? 0 : 1
+      },
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Cookie': app.globalData.sessionId
+      },
+      success: function (res) {
+       
+
+
+      },
+      fail: function () {
+        API.failTips('购物车信息请求错误，请重新请求')
+      }
+    })
+
   },
   bindPickerChange(e) {
     this.setData({

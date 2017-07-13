@@ -1,5 +1,5 @@
 .address-edit {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     margin-top: 0.5rem;
     background-color: #FFF;
     padding: 0 0.4rem;
@@ -22,11 +22,11 @@
     line-height: 1.2rem;
     border: none;
     outline: none;
-    font-size: 0.65rem;
-    //color: #A0A0A0;
+    font-size: 0.75rem;
     color: #000;
     vertical-align: middle;
     display: inline-block;
+    padding-left: 1rem;
 }
 .address-edit .addressView input:focus {
     border: none;

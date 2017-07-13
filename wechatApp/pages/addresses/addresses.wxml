@@ -6,19 +6,19 @@
         <view wx:for="{{addressesList}}" wx:for-item="address" wx:for-index="index" class="address">
 		    <view class="detail">
 		        <view class="customer">
-		        	<view class="reciver">收件人：{{ address.consignee }}</view>
-		        	<view class="tel">{{ address.mobile }} </view>
+		        	<view class="reciver">收件人：{{ address.name }}</view>
+		        	<view class="tel">{{ address.phone }} </view>
 		        </view>
-		        <view class="addr">{{ address.lareaName }}{{ address.address }} </view>
+		        <view class="addr">{{ address.address }} </view>
 		    </view>
 		    <view class="operation">
 		    	<radio-group bindchange="setDefault">
 					<template is="mm-radio" data="{{...address.items}}"></template>
 				</radio-group>
 
-				<image class="edit" bindtap="goEdit" src="./images/edit.png" alt="edit" data-address-id="{{address.address_id}}"></image>
+				<image class="edit" bindtap="goEdit" src="./images/edit.png" alt="edit" data-address-id="{{address.id}}"></image>
 
-		        <image class="delete" bindtap="delete" src="./images/delete.png" alt="delete" mode="aspectFit" data-address-id="{{address.address_id}}" data-index="{{index}}"></image>
+		        <image class="delete" bindtap="delete" src="./images/delete.png" alt="delete" mode="aspectFit" data-address-id="{{address.id}}" data-index="{{index}}"></image>
 		    </view>
 		</view>
 	    <view class="btnBox">
