@@ -1,4 +1,5 @@
 var app = getApp();
+import resource from '../../lib/resource';
 var API = require('../../request/API.js');
 var API = require('../../request/API.js');
 Page({

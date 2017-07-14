@@ -37,34 +37,62 @@ Page({
       url: '../address-edit/address-edit?id='+id
     });
   },
+
+  //删除地址
   delete(event) {
     const id = event.target.dataset.addressId;
     let addressList = this.data.addressesList;
+    const that = this;
 
     resource.confirmToast(() => {
-      resource.deleteAddress(id).then((res) => {
-        if (res.statusCode === 200) {
-          resource.successToast(() => {
-            const defaultData = addressList.find(itm => itm.items.is_default === true);
-            if (+defaultData.address_id === +id && addressList.length > 0) {
-              addressList = addressList.filter(itm => +itm.address_id !== +id);
-              // addressList.forEach((itm) => {
-
-              // });
-              // addressList[0].items.is_default = true;
-              // addressList[0].items.iconType = 'success';
-              // addressList[0].items.iconColor = '#FF2D4B';
-            }
-            this.setData({
-              defaultId: defaultData.address_id,
-              addressesList: addressList.filter(itm => +itm.address_id !== +id)
-            });
-          });
+      wx.request({
+        url: API.APIDomian + '/wx/address/delete',
+        data: {
+          'id': id
+        },
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'Cookie': app.globalData.sessionId
+        },
+        success: function (res) {
+          if (res.data.resp_code == '000000') {
+            queryAddress(that)
+          }
+          else {
+            wx.failToast();
+          }
+        },
+        fail: function () {
+          API.failTips('地址信息请求错误，请重新请求')
         }
-      });
+      })
+
+
+      // resource.deleteAddress(id).then((res) => {
+      //   if (res.statusCode === 200) {
+      //     resource.successToast(() => {
+      //       const defaultData = addressList.find(itm => itm.items.is_default === true);
+      //       if (+defaultData.address_id === +id && addressList.length > 0) {
+      //         addressList = addressList.filter(itm => +itm.address_id !== +id);
+      //         // addressList.forEach((itm) => {
+
+      //         // });
+      //         // addressList[0].items.is_default = true;
+      //         // addressList[0].items.iconType = 'success';
+      //         // addressList[0].items.iconColor = '#FF2D4B';
+      //       }
+      //       this.setData({
+      //         defaultId: defaultData.address_id,
+      //         addressesList: addressList.filter(itm => +itm.address_id !== +id)
+      //       });
+      //     });
+      //   }
+      // });
     });
   },
 
+  //地址设置为默认
   setDefault(event) {
     const checkedId = +event.currentTarget.dataset.valueId || +event.detail.value;
     let setFlag = false;
@@ -104,7 +132,7 @@ Page({
  
   },
 
-  onLoad() {
+  onShow() {
     tips.toast(this.data.tipsData);
     const tipsData = {
       title: 'sku不足zz',
@@ -122,44 +150,47 @@ Page({
     }, 3000);
 
     var that = this;
-    wx.request({
-      url: API.APIDomian + '/wx/address/query_all',
-      data: {},
-      method: 'POST',
-      header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Cookie': app.globalData.sessionId
-      },
-      success: function (res) {
-        console.log(res.data.data)
-        if (res.data.data) {
-          res.data.data.forEach((itm) => {
-            itm.overlayConfirm = false;
-            itm.items = {
-              id: itm.id,
-              is_default: itm.is_default,
-              isgroup: true,
-              labelText: '设置为默认',
-              iconType: itm.is_default ? 'circle' : 'success'
-            };
-            itm.items.iconColor = itm.items.iconType === 'success' ? 'orange' : '';
-          });
-          console.log(res);
-          that.setData({
-            addressesList: res.data.data,
-            loading: false
-          });
-        } else {
-          that.setData({
-            addressesList: [],
-            loading: false
-          });
-        }
-      },
-      fail: function () {
-        API.failTips('地址信息请求错误，请重新请求')
-      }
-    })
+    queryAddress(that)
 
   }
 });
+
+function queryAddress(that){
+  wx.request({
+    url: API.APIDomian + '/wx/address/query_all',
+    data: {},
+    method: 'POST',
+    header: {
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      'Cookie': app.globalData.sessionId
+    },
+    success: function (res) {
+      if (res.data.data) {
+        res.data.data.forEach((itm) => {
+          itm.overlayConfirm = false;
+          itm.items = {
+            id: itm.id,
+            is_default: itm.is_default,
+            isgroup: true,
+            labelText: '设置为默认',
+            iconType: itm.is_default ? 'circle' : 'success'
+          };
+          itm.items.iconColor = itm.items.iconType === 'success' ? 'orange' : '';
+        });
+        console.log(res);
+        that.setData({
+          addressesList: res.data.data,
+          loading: false
+        });
+      } else {
+        that.setData({
+          addressesList: [],
+          loading: false
+        });
+      }
+    },
+    fail: function () {
+      API.failTips('地址信息请求错误，请重新请求')
+    }
+  })
+}

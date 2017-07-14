@@ -7,9 +7,9 @@ var API = require('../../request/API.js');
 Page({
   data: {
     loading: true,
-    consignee: '',
-    mobile: '',
-    country: '',
+    name: '',
+    phone: '',
+    county: '',
     address: '',
     addressid: '',
     items: {
@@ -54,11 +54,11 @@ Page({
         success: function (res) {
           that.data.items.is_default = res.data.data[0].is_default;
           that.setData({
-            name: res.data.data[0].name,
+            name: res.data.data[0].user_name,
             phone: res.data.data[0].phone,
-            county: res.data.data[0].county,
-            province: res.data.data[0].province,
-            city: res.data.data[0].city,
+            county: res.data.data[0].details.split(',')[2],
+            province: res.data.data[0].details.split(',')[0],
+            city: res.data.data[0].details.split(',')[1],
             street: res.data.data[0].street,
             loading: false
           });
@@ -66,7 +66,7 @@ Page({
           city.init(that);
         },
         fail: function () {
-          API.failTips('购物车信息请求错误，请重新请求')
+          API.failTips('获取地址失败，请重新请求')
         }
       })
 
@@ -91,10 +91,10 @@ Page({
      
   },
   listenerReciverInput(e) {
-    this.data.consignee = e.detail.value;
+    this.data.name = e.detail.value;
   },
   listenerPhoneInput(e) {
-    this.data.mobile = e.detail.value;
+    this.data.phone = e.detail.value;
   },
   listenerAddressInput(e) {
     this.data.address = e.detail.value;
@@ -119,11 +119,11 @@ Page({
   },
   submitBtn() {
     const that = this;
-    if (!this.data.consignee) { that.showToast('收货人不能为空'); return; }
-    if (this.data.consignee.length < 2) { that.showToast('收货人姓名限制为2~15个字符'); return; }
-    if (!this.data.mobile) { that.showToast('手机号不能为空'); return; }
-    if (!/^1[3|4|5|7|8]\d{9}$/.test(this.data.mobile)) { that.showToast('手机格式有误，请重新输入'); return; }
-     //if (this.data.city.provinceIndex == 0) { that.showToast('省市地址不能为空'); return; }
+    if (!this.data.name) { that.showToast('收货人不能为空'); return; }
+    if (this.data.name.length < 2) { that.showToast('收货人姓名限制为2~15个字符'); return; }
+    if (!this.data.phone) { that.showToast('手机号不能为空'); return; }
+    if (!/^1[3|4|5|7|8]\d{9}$/.test(this.data.phone)) { that.showToast('手机格式有误，请重新输入'); return; }
+    if (this.data.addressSelect.provinceIndex == 0) { that.showToast('省市地址不能为空'); return; }
     if (!this.data.address) { that.showToast('街道地址不能为空'); return; }
     if (this.data.address.length < 5) { that.showToast('街道地址字数必须在5~60之间'); return; }
 
@@ -138,17 +138,21 @@ Page({
     //   is_default: this.data.items.is_default ? 1 : 0
     // };
 
+     var pvcCityArr = [];
+     pvcCityArr.push(this.data.addressSelect.provinceIdx[this.data.addressSelect.provinceIndex]);
+     pvcCityArr.push(this.data.addressSelect.cityIdx[this.data.addressSelect.provinceIndex][this.data.addressSelect.cityIndex]);
+     pvcCityArr.push(this.data.addressSelect.districtIdx[this.data.addressSelect.cityIdx[this.data.addressSelect.provinceIndex][this.data.addressSelect.cityIndex]][this.data.addressSelect.districtIndex])
 
     wx.request({
       url: API.APIDomian + '/wx/address/add',
       data: {
-        'name': this.data.consignee,
-        'phone': this.data.mobile,
+        'name': this.data.name,
+        'phone': this.data.phone,
         'province': this.data.addressSelect.selectedProvince,
         'city': this.data.addressSelect.selectedCity,
         'county': this.data.addressSelect.selectedDistrct,
         'street': this.data.address,
-        'details':'',
+        'details': pvcCityArr,
         'is_default': this.data.items.is_default ? 0 : 1
       },
       method: 'POST',
@@ -157,12 +161,18 @@ Page({
         'Cookie': app.globalData.sessionId
       },
       success: function (res) {
-       
-
+        if(res.data.resp_code=='000000'){
+          wx.navigateTo({
+            url: '../addresses/addresses'
+          });
+        }
+        else{
+          API.failTips('收货地址添加失败，请重试')
+        }
 
       },
       fail: function () {
-        API.failTips('购物车信息请求错误，请重新请求')
+        API.failTips('收货地址添加失败，请重试')
       }
     })
 

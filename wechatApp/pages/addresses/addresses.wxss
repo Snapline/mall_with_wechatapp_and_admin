@@ -98,9 +98,9 @@
     height: 1.65rem;
     line-height: 1.65rem;
     margin: auto;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     border-radius: 0.2rem;
-    background-color: #FF2D4B;
+    background-color: orange;
     color: #FFF;
     text-align: center;
 }

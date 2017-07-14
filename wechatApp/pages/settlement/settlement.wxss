@@ -200,7 +200,7 @@
 }
 .settlement button {
     float: right;
-    background-color: #FF2D4B;
+    background-color: orange;
     color: #FFF;
     width: 185rpx;
     height: 80rpx;
@@ -210,5 +210,5 @@
     margin-top: 0.4rem;
     border: none;
     outline: none;
-    font-size: 23.4375rpx;
+    font-size: 0.85rem;
 }

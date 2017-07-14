@@ -6,7 +6,7 @@
         <view class="address-edit">
 	        <view class="addressView">
 	            <text>收 货 人</text>
-	            <input name="consignee" placeholder="请输入收货人姓名" placeholder-style="color: #A0A0A0; font-size:0.7rem;padding-left:1rem;" maxlength="15" value="{{consignee}}" bindinput="listenerReciverInput" />
+	            <input name="name" placeholder="请输入收货人姓名" placeholder-style="color: #A0A0A0; font-size:0.7rem;padding-left:1rem;" maxlength="15" value="{{name}}" bindinput="listenerReciverInput" />
 	        </view>
 	        <view class="addressView">
 	            <text>手机号码</text>

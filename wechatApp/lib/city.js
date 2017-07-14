@@ -1,6 +1,7 @@
 
 
 function init(that){
+  console.log(that);
     let area = require('laraArea.js');
     let province = ['-请选择-'];
     let provinceIdx = [0];
