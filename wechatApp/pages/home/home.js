@@ -83,7 +83,7 @@ function getRecommends(that){
     url: API.APIDomian + '/wx/stars/list',
     data: {
       'page_num': that.data.bottomNum,
-      'per_page': 4
+      'per_page': 6
     },
     method: 'POST',
     header: {

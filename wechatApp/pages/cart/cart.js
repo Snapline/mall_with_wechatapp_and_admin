@@ -155,7 +155,7 @@ Page({
       })
 
       wx.navigateTo({
-        url: '../settlement/settlement?itemId=' + itemIdArr.join(',') + '&itemNum=' + itemNumArr.join(',')
+        url: '../settlement/settlement?itemId=' + itemIdArr.join(',') + '&itemNum=' + itemNumArr.join(',') + '&totalPrice=' + this.data.buyPrice
       });
     }
    

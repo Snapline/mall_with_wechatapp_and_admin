@@ -2,12 +2,15 @@ import request from '../../lib/request';
 import resource from '../../lib/resource';
 import serviceData from '../../data/config';
 import Promise from '../../lib/promiseEs6Fix';
-
+var API = require('../../request/API.js');
 
 const app = getApp();
 Page({
   data: {
     loading: false,
+    bottomNum: 1,
+    hasToEnd: false,
+
     activeNav: 'all',
     navs: [{
       text: '全部',
@@ -25,19 +28,35 @@ Page({
     orderList: []
   },
   onLoad(options) {
+    
     const that = this;
-    if (options.t) {
-      this.setData({
-        activeNav: options.t
-      });
-    }
-    this.getList().then((res) => {
-      that.setOrderData(res.data);
-      that.setData({
-        orderList: res.data,
-        loading: false
-      });
-    });
+    //区别nav上的订单类型，暂时不显示
+    // if (options.t) {
+    //   this.setData({
+    //     activeNav: options.t
+    //   });
+    // }
+    wx.request({
+      url: API.APIDomian + '/wx/order/query',
+      data: {
+        'perPage': that.data.bottomNum,
+        'per_page': 5
+      },
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Cookie': app.globalData.sessionId
+      },
+      success: function (res) {
+        that.setData({
+          orderList: res.data.result.data
+        })
+      },
+      fail: function () {
+        API.failTips('获取订单信息失败，请重新请求')
+      }
+    })
+
   },
   setOrderData(data) {
     data.forEach((itm) => {

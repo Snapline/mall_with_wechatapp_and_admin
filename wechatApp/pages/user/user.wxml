@@ -20,7 +20,8 @@
     <!--我的订单-->
     <template is="list" data="{{...order}}"></template>
     <!--待付款 代发货 待收货-->
-    <view class="order">
+    <!-- 暂时不分类，代码保留 -->
+    <!-- <view class="order">
         <block wx:for="{{orderCell}}">
             <navigator hover-class="none" url="{{item.url}}" class="order-cell">
                 <image class="{{item.class}}" src="{{item.icon}}"></image>
@@ -28,7 +29,7 @@
                 <view style="font-size:30rpx;">{{item.text}}</view>
             </navigator>
         </block>
-    </view>
+    </view> -->
     <!--地址管理 客服 意见 关于-->
     <template wx:for="{{list}}" is="list" data="{{...item}}"></template>
 </scroll-view>
