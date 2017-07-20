@@ -41,7 +41,7 @@ Page({
         text: '地址管理',
         tip: '',
         cut: true,
-        url: '../addresses/addresses'
+        url: '../addresses/addresses?choose=2'
       }, {
         icon: 'images/tel.png',
         text: '客服电话',

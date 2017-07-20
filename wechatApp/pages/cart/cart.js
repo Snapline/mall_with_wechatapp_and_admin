@@ -1,7 +1,6 @@
 var app = getApp();
 import resource from '../../lib/resource';
 var API = require('../../request/API.js');
-var API = require('../../request/API.js');
 Page({
   data: {
     loading: true,
@@ -138,15 +137,30 @@ Page({
       buyPrice: buyPrice.toFixed(2)
     });
   },
+
   // 去结算页面
   toSettlement() {
     if(this.data.buyNumber == 0) {
        resource.showTips(this, '你还未勾选商品'); return;
     }
-    wx.navigateTo({
-      url: '../settlement/settlement',
-    });
+    else{
+      //将购买的产品信息传递过去
+      var itemIdArr = [];
+      var itemNumArr = [];
+      this.data.cartList.forEach(function(item){
+        if(item.status){
+          itemIdArr.push(item.item_id);
+          itemNumArr.push(item.num)
+        }
+      })
+
+      wx.navigateTo({
+        url: '../settlement/settlement?itemId=' + itemIdArr.join(',') + '&itemNum=' + itemNumArr.join(',')
+      });
+    }
+   
   },
+
   // 去除购物车物品
   delProduct(event) {
     const productId = event.currentTarget.dataset.id;

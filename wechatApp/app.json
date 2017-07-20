@@ -1,6 +1,5 @@
 {
   "pages":[
-    "pages/settlement/settlement",
     "pages/home/home",
     "pages/category/category",
     "pages/category-product/category-product",    
@@ -9,7 +8,7 @@
     "pages/user/user",
     "pages/products/products",
     "pages/orders/orders",
-    
+    "pages/settlement/settlement",
     "pages/address-edit/address-edit",
     "pages/order-detail/order-detail",
     "pages/feedback/feedback",

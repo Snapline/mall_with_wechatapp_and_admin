@@ -1,74 +1,75 @@
 import Promise from '../../lib/promiseEs6Fix';
 import request from '../../lib/request';
 import resource from '../../lib/resource';
-
+var API = require('../../request/API.js');
 const app = getApp();
 Page({
   data: {
-    shop_id: app.globalData.shop_id,
-    address: [],
-    cartList: [],
-    freight: 0,
-    totalPay: 0,
+    address: [], //地址
+    buyItemId: '', //购买商品的id字符串
+    buyNumStr: '', //购买商品的数量字符串
+    provinceChosen: '', //默认地址的省份
+    freight: 0, //运费
+    totalPay: 0, //商品总额
     ok: 1,
     loading: false,
     exec:false,
   },
-  //页面刷新重新
-  onShow(){
-    // resource.fetchAddresses().then(res => {
-    //   res.data.forEach(item => {
-    //     if (item.is_default) {
-    //       this.setData({address:item})
-    //     }
-    //   });
 
-    // })
+  onLoad(option) {
+    console.log(option)
+    this.setData({
+      buyItemId: option.itemId,
+      buyNumStr: option.itemNum
+    })
   },
-  onLoad() {
-    // const requests = ['/balance', '/cart/indexCart',
-    //     '/users/addresses'
-    //   ]
-    //   .map(path => (
-    //     request({ path })
-    //     .then(response => response.data)
-    //     .catch(() => [])
-    //   ));
-    // Promise.all(requests).then(([balance, carInfo, addressList]) => {
-    //   let address = [];
-    //   let cartList = [];
-    //   let buyNumber = 0;
-    //   let totalPay = 0;
-    //   let ok = 0;
-    //   addressList.forEach((item) => {
-    //     if (item.is_default) {
-    //       ok = 1;
-    //       address = item;
-    //     }
-    //   });
-    //   carInfo.forEach((item) => {
-    //     item.real_price = item.real_price.toFixed(2);
-    //     item.market_price = item.market_price.toFixed(2);
-    //     if (item.status) {
-    //       buyNumber += item.goods_number;
-    //       totalPay += item.goods_number * item.real_price;
-    //       cartList.push(item);
-    //     }
-    //   });
-    //   let freight = 0;
-    //   resource.getShipping(this.data.shop_id, address.city).then((res) => {
-    //     if (Number(res.statusCode) !== 200) {
-    //       ok = 1 && ok;
-    //     } else {
-    //       freight = res;
-    //       ok = 0 && ok;
-    //     }
-    //   });
-    //   totalPay = totalPay.toFixed(2);
-    //   freight = freight.toFixed(2);
-    //   var loading = false;
-    //   this.setData({ loading, address, ok, cartList, freight, totalPay });
-    // });
+
+  onShow(){
+    var that = this;
+    //获取默认地址
+    wx.request({
+      url: API.APIDomian + '/wx/address/query',
+      data: {},
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Cookie': app.globalData.sessionId
+      },
+      success: function (res) {
+        that.setData({
+          address:res.data.data,
+          provinceChosen: res.data.data.province
+        })
+
+
+        //获取运费价格
+        wx.request({
+          url: API.APIDomian + '/wx/address/express_price',
+          data: {
+            'item_id': that.data.buyItemId,
+            'num': that.data.buyNumStr,
+            'province': that.data.provinceChosen
+          },
+          method: 'POST',
+          header: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+            'Cookie': app.globalData.sessionId
+          },
+          success: function (res) {
+            that.setData({
+              freight: res.data.express_price
+            })
+          },
+          fail: function () {
+            API.failTips('运费获取失败，请重新请求')
+          }
+        })
+      },
+      fail: function () {
+        API.failTips('地址请求错误，请重新请求')
+      }
+    })
+
   },
   postOrder() {
     this.setData({exec: true});
@@ -141,8 +142,60 @@ Page({
   },
 
   navigateToAddress() {
+    //加入choose=1的标志，有此标志，说明用户可以选择地址。
     wx.navigateTo({
-      url: '../addresses/addresses',
+      url: '../addresses/addresses?choose=1',
     });
   }
 });
+
+
+// function submitCharge(that) {
+//   wx.request({
+//     url: API.DOMAIN + 'order/game_prepay',
+//     header: {
+//       'content-type': 'application/x-www-form-urlencoded',
+//       'Cookie': that.data.userSession
+//     },
+//     method: 'POST',
+//     data: {
+//       gameId: that.data.gameId,
+//       itemId: that.data.chosenBox,
+//       account: that.data.account,
+//       cardNum: that.data.buyNumber,
+//       price: that.data.unitPrice,
+//       totalPrice: that.data.amountPay,
+//       gameArea: that.data.gameRegion.selectedRegion || '',
+//       gameSrv: that.data.gameRegion.selectedServer || ''
+//     },
+//     success: function (resItemData) {
+//       console.log(resItemData);
+//       if (resItemData.data.resp_code == '000000') {
+//         //成功获取，进入充值步骤
+//         var paymentData = resItemData.data.data;
+//         wx.requestPayment({
+//           'timeStamp': paymentData.timeStamp,
+//           'nonceStr': paymentData.nonceStr,
+//           'package': paymentData.package,
+//           'signType': 'MD5',
+//           'paySign': paymentData.paySign,
+//           'success': function (res) {
+//           },
+//           'fail': function (res) {
+//             wx.showModal({
+//               content: '订单未支付成功，请重新支付。',
+//               showCancel: false
+//             })
+//           }
+//         })
+//       }
+//       else {
+//         //获取支付信息失败
+//         showModal('网络请求错误，请重新操作');
+//       }
+//     },
+//     fail: function () {
+//       showModal('网络请求错误，请重新操作');
+//     }
+//   })
+// }

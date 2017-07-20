@@ -11,7 +11,9 @@ Page({
     defaultId: 0,
     tipsData: {
       title: ''
-    }
+    },
+    //是否是从settlement页面而来
+    fromSettle:false
   },
 
   addAddress(e){
@@ -67,28 +69,6 @@ Page({
           API.failTips('地址信息请求错误，请重新请求')
         }
       })
-
-
-      // resource.deleteAddress(id).then((res) => {
-      //   if (res.statusCode === 200) {
-      //     resource.successToast(() => {
-      //       const defaultData = addressList.find(itm => itm.items.is_default === true);
-      //       if (+defaultData.address_id === +id && addressList.length > 0) {
-      //         addressList = addressList.filter(itm => +itm.address_id !== +id);
-      //         // addressList.forEach((itm) => {
-
-      //         // });
-      //         // addressList[0].items.is_default = true;
-      //         // addressList[0].items.iconType = 'success';
-      //         // addressList[0].items.iconColor = '#FF2D4B';
-      //       }
-      //       this.setData({
-      //         defaultId: defaultData.address_id,
-      //         addressesList: addressList.filter(itm => +itm.address_id !== +id)
-      //       });
-      //     });
-      //   }
-      // });
     });
   },
 
@@ -132,7 +112,54 @@ Page({
  
   },
 
-  onShow() {
+  //选择地址，之后返回到付款页面，改地址成为默认地址
+  chooseAddress(event){
+    if (this.data.fromSettle){
+      const checkedId = +event.currentTarget.dataset.valueId || +event.detail.value;
+      let setFlag = false;
+      const that = this;
+      resource.loadingToast();
+      wx.request({
+        url: API.APIDomian + '/wx/address/modify',
+        data: {
+          'is_default': 0,
+          'id': checkedId
+        },
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'Cookie': app.globalData.sessionId
+        },
+        success: function (res) {
+          if (res.data.resp_code == '000000') {
+            setFlag = true;
+            that.setDefaultStyle(that.data.addressesList, checkedId);
+            that.setData({ addressesList: that.data.addressesList });
+            wx.navigateBack({
+              delta: 1
+            })
+          }
+          else {
+            wx.failToast();
+          }
+        },
+        fail: function () {
+          API.failTips('选择地址失败')
+        }
+      })
+    }
+    else{
+      return false
+    }
+    
+  },
+
+  onLoad(options) {
+    if(options.choose==1){
+      this.setData({
+        fromSettle: true
+      })
+    }
     tips.toast(this.data.tipsData);
     const tipsData = {
       title: 'sku不足zz',
