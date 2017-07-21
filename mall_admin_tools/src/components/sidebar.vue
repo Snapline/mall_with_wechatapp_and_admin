@@ -37,6 +37,13 @@
     					linkIndex: 'orderlist',
     				}]
     			},{
+    				title: '运费管理',
+    				linkIndex: 'freightadmin',
+    				children:[{
+    					title: '运费列表',
+    					linkIndex: 'freightlist',
+    				}]
+    			},{
     				title: '系统设置',
     				linkIndex: 'settings',
     				children:[{

@@ -10,6 +10,7 @@ Page({
     loading: false,
     bottomNum: 1,
     hasToEnd: false,
+    apiHeader: '',
 
     activeNav: 'all',
     navs: [{
@@ -28,7 +29,6 @@ Page({
     orderList: []
   },
   onLoad(options) {
-    
     const that = this;
     //区别nav上的订单类型，暂时不显示
     // if (options.t) {
@@ -39,8 +39,8 @@ Page({
     wx.request({
       url: API.APIDomian + '/wx/order/query',
       data: {
-        'perPage': that.data.bottomNum,
-        'per_page': 5
+        'perPage': 5,
+        'pageNum': that.data.bottomNum
       },
       method: 'POST',
       header: {
@@ -48,6 +48,9 @@ Page({
         'Cookie': app.globalData.sessionId
       },
       success: function (res) {
+        res.data.result.data.forEach(function(item){
+          item.apiHeader = API.APIDomian
+        });
         that.setData({
           orderList: res.data.result.data
         })
@@ -58,49 +61,27 @@ Page({
     })
 
   },
-  setOrderData(data) {
-    data.forEach((itm) => {
-      itm.order = {
-        orderStatus: itm.order_status,
-        orderSn: itm.order_sn,
-        subOrderSn : itm.sub_order_sn,
-        isButtonHidden : itm.order_status == "待支付" ? true: false,
-      };
-    });
-    return data;
-  },
 
   //导航栏切换类别
-  changeList(e) {
-    const that = this;
-    const alias = e.target.dataset.alias;
+  // changeList(e) {
+  //   const that = this;
+  //   const alias = e.target.dataset.alias;
 
-    if (alias !== this.data.activeNav) {
-      this.setData({
-        activeNav: e.target.dataset.alias,
-        loading: true
-      });
-      this.getList().then((res) => {
-        that.setOrderData(res.data);
-        that.setData({
-          orderList: res.data,
-          loading: false
-        });
-      });
-    }
-  },
-  getList() {
-    const data = {
-      type: this.data.activeNav,
-      per_page: 10
-    };
-      //模拟请求数据
-      var $promise = new Promise(function(resolve,reject) {
-          resolve({statusCode:200, data:serviceData.orderData});
-      });
-      return $promise;
-    return request({ path: '/clientOrder', data });
-  },
+  //   if (alias !== this.data.activeNav) {
+  //     this.setData({
+  //       activeNav: e.target.dataset.alias,
+  //       loading: true
+  //     });
+  //     this.getList().then((res) => {
+  //       that.setOrderData(res.data);
+  //       that.setData({
+  //         orderList: res.data,
+  //         loading: false
+  //       });
+  //     });
+  //   }
+  // },
+
   cancelOrder(e) {
     const that = this;
     console.log(that)
@@ -130,45 +111,8 @@ Page({
         });
       }
     });
-    // resource.cancalOrder(orderSn).then((res) => {
-    //   console.log(res);
-    //   if (res.statusCode === 200) {
-    //     resource.successToast(() => {
-    //       that.setOrderData(res.data);
-    //       that.setData({
-    //         orderList: res.data
-    //       });
-    //     });
-    //   }
-    // });
   },
-  drawbackOrder(e) {
-    const that = this;
-    const orderSn = e.target.dataset.orderSn;
-    wx.showModal({
-    content: '亲，你是否确定退款',
-    showCancel: true,
-    success: (res) => {
-       if(res.confirm == 0) {
-          return;
-        }
-        resource.drawbackOrder(orderSn).then((res) => {
-          if (res.statusCode === 200) {
-            this.data.orderList.forEach((item,key) => {
-              if(item.order_sn == orderSn) {
-                  item.refund_status = "待审核";
-              }
-            })
-            resource.showTips(that, '退款操作成功');
-            this.setData({orderList :  this.data.orderList});
-          } else {
-             resource.showTips(that, '退款操作失败');
-          }
-        });
-        
-      }
-    });
-  },
+
    confirmOrder(e) {
     const that = this;
     console.log(that)
@@ -199,54 +143,51 @@ Page({
       }
     });
    },
+
+  //继续付款
   payOrder(e) {
-    const orderSn = e.target.dataset.orderSn;
-    resource.getPaySign({ out_trade_no: orderSn, AppID: app.globalData.appId })
-      .then((payRes) => {
-        if (Number(payRes.statusCode) === 200) {
-          const wechatData = payRes.data.payment;
+    var orderId = e.currentTarget.dataset.orderid;
+    const that = this;
+    wx.request({
+      url: API.APIDomian + '/wx/item/repay',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Cookie': app.globalData.sessionId
+      },
+      method: 'POST',
+      data: {
+        'orderId': orderId
+      },
+      success: function (resItemData) {
+        if (resItemData.data.resp_code == '000000') {
+          //成功获取，进入充值步骤
+          var paymentData = resItemData.data.data;
           wx.requestPayment({
-            appId: wechatData.appId,
-            timeStamp: wechatData.timeStamp,
-            nonceStr: wechatData.nonceStr,
-            package: wechatData.package,
-            signType: 'MD5',
-            paySign: wechatData.paySign,
-            success(res) {
-              if (res.errMsg === 'requestPayment:ok') {
-                app.globalData.type = 'success';
-                wx.navigateTo({
-                  url: '../result/result'
-                });
-              } else if (res.errMsg === 'requestPayment:cancel') {
-                app.globalData.type = 'fail';
-                wx.navigateTo({
-                  url: '../orders/orders?t=unpaid'
-                });
-              }
+            'timeStamp': paymentData.timeStamp,
+            'nonceStr': paymentData.nonceStr,
+            'package': paymentData.package,
+            'signType': 'MD5',
+            'paySign': paymentData.paySign,
+            'success': function (res) {
+              API.failTips('支付成功');
             },
-            fail() {
-            },
-            complete(res) {
-              console.log(res);
+            'fail': function (res) {
+              wx.showModal({
+                content: '订单未支付成功，请重新支付。',
+                showCancel: false
+              })
             }
-          });
-        } else {
-          this.setData({
-            toast: {
-              toastClass: 'yatoast',
-              toastMessage: '获取支付验证错误!'
-            }
-          });
-          setTimeout(() => {
-            this.setData({
-              toast: {
-                toastClass: '',
-                toastMessage: ''
-              }
-            });
-          }, 2000);
+          })
         }
-      });
+        else {
+          //获取支付信息失败
+          API.failTips('网络请求错误，请重新操作');
+        }
+      },
+      fail: function () {
+        API.failTips('网络请求错误，请重新操作');
+      }
+    })
+
   }
 });

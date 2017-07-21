@@ -90,6 +90,18 @@ export default new Router({
             	}
             ]
         },
+          //运费管理
+         //运费列表
+         {
+            path: '/freightlist',
+            component: resolve => require(['../components/home.vue'], resolve),
+            children:[
+            	{
+            		path: '/',
+            		component: resolve => require(['../components/freightAdmin/freightlist.vue'], resolve)
+            	}
+            ]
+        },
         {
             path: '/login',
             component: resolve => require(['../components/login.vue'], resolve)

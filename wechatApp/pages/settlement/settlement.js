@@ -103,6 +103,7 @@ Page({
               'signType': 'MD5',
               'paySign': paymentData.paySign,
               'success': function (res) {
+                API.failTips('支付成功');
               },
               'fail': function (res) {
                 wx.showModal({

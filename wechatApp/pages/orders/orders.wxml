@@ -2,32 +2,37 @@
 <template name="order-cell">
     <view class="order-cell">
         <view class="cell-status">
-        {{refund_status==="没有售后" ? order_status : "售后处理中"}}
+        <!-- {{refund_status==="没有售后" ? order_status : "售后处理中"}} -->
         </view>
          <navigator url="../order-detail/order-detail?subOrderSn={{sub_order_sn}}" hover-class="none" class="cell-item">
-            <view class="{{items.length===1?'':'hide'}}">
-                <image class="good-thumb" src="{{items[0].pic_url_resize}}" alt="item"/>
+          <block wx:for="{{items}}">
+            <view class="{{items.length>0?'':'hide'}}" style="margin: 10rpx 0">
+             
+                <image class="good-thumb" src="{{apiHeader+item.pic_url_resize}}" alt="item"/>
                 <view class="item-content">
-                    <view class="content-name">{{items[0].name}}</view>
+                    <view class="content-name">{{item.name}}</view>
                     <!-- <view class="content-attr">{{items[0].goods_attr}}</view> -->
-                    <view class="content-count">￥{{items[0].totalPrice}}<view class="content-amount">×{{goods[0].goods_number}}</view></view>
+                    <view class="content-count">￥{{item.price}}<view class="content-amount">×{{item.num}}</view></view>
+                    <view style="clear:both"></view>
                 </view>
+             
             </view>
-            <scroll-view scroll-x="true" class="{{goods.length===1?'hide':''}}">
+           </block>
+            <!-- <scroll-view scroll-x="true" class="{{goods.length===1?'hide':''}}">
                 <view style="display:inline-block;" wx:for="{{items}}"><image class="good-thumb" src="{{item.thumb_url}}"></image></view>
-            </scroll-view>
+            </scroll-view> -->
         </navigator> 
         <view class="cell-count">
             <!-- <view class="count-amount">共{{goods.length}}件商品</view> -->
-            <view class="count-price">￥{{total_amount}}</view>
-            <view class="count-carriage">运费：<text>￥{{shipping_price}}</text></view>
+            <view class="count-price">￥{{totalPrice}}</view>
+            <view class="count-carriage">运费：<text>￥{{expressPrice}}</text></view>
         </view>
         <view class="cell-btn">
-          <button class="btn-order btn-solid-red" wx:if="{{ status_num===2 }}" bindtap="payOrder">付款</button>
-          <button class="btn-order btn-solid-red" wx:if="{{ status_num===4 }}" bindtap="checkDeliver">查看物流</button>
-          <button class="btn-order btn-solid-red" wx:if="{{ status_num===5 }}" bindtap="confirmGoods">确认收货</button>
-          <button class="btn-order btn-solid-red" wx:if="{{ status_num===6 }}" bindtap="commentGoods">评价商品</button>
-          <button class="btn-order btn-solid-red" bindtap="showDetails">显示详情</button>
+          <button data-orderid="{{orderId}}" class="btn-order btn-solid-red" wx:if="{{ status_num===2 }}" bindtap="payOrder">付款</button>
+          <button class="btn-order btn-solid-blue" wx:if="{{ status_num===4 }}" bindtap="checkDeliver">查看物流</button>
+          <button class="btn-order btn-solid-green" wx:if="{{ status_num===5 }}" bindtap="confirmGoods">确认收货</button>
+          <button class="btn-order btn-solid-pink" wx:if="{{ status_num===6 }}" bindtap="commentGoods">评价商品</button>
+          <button class="btn-order btn-solid-default" bindtap="showDetails">显示详情</button>
          
         </view>
     </view>
