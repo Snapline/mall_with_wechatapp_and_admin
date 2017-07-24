@@ -45,18 +45,13 @@ Page({
       }, {
         icon: 'images/tel.png',
         text: '客服电话',
-        tip: '1380043433',
+        tip: '13732624360',
       }, {
         icon: 'images/feedback.png',
         text: '意见反馈',
         tip: '',
         cut: true,
         url: '../feedback/feedback'
-      }, {
-        icon: 'images/about.png',
-        text: '关于商城',
-        tip: '',
-        url: '../about/about'
       }
     ]
   },

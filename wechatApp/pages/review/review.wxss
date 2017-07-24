@@ -154,8 +154,6 @@ view, text{
 }
 
 .comment1-description1{
-    font-family: PingFangSC-Regular;
-    font-size: 28rpx;
     color: #333333;
     margin-left: 30rpx;
 }
@@ -188,4 +186,100 @@ view, text{
   background: #F5F5F7;
   height: 130rpx;
   opacity: 0.8
+}
+
+.flex-box{
+    flex-direction:row;
+    width:92%; 
+    flex-wrap: wrap; 
+    display:flex; 
+    align-items:center; 
+    justify-content: space-between;
+}
+
+.left_text{
+    padding-left:18rpx;
+    font-size: 36rpx;
+    color: #000000;
+}
+
+.flex-label{
+    display:inline-block;
+}
+
+.container{
+    padding: 0;
+    color: #000000;
+   
+    
+}
+
+.pay_button{
+    width: 40%;
+    margin: 60rpx auto;
+}
+
+
+
+.input_ph{
+  font-size:30rpx;
+  font-family: '微软雅黑';
+}
+
+.title_area{
+   border-top: 2rpx solid lightgray;
+   width:100%;
+   height:80rpx;
+   line-height: 80rpx;
+   padding-left: 10rpx;
+}
+
+.text_area textarea{
+  width: 100%;
+}
+
+.wordcount{
+  color: gray;
+  font-size:34rpx;
+}
+
+.images-wrapper {
+  padding: 20rpx;
+  background-color: #fff;
+  margin-top: 20rpx;
+}
+.images-wrapper-text {
+  font-size: 28rpx;
+}
+.images-list {
+  display: flex;
+  margin-top: 20rpx;
+  flex-wrap: wrap;
+}
+.images-image {
+  width: 150rpx;
+  height: 150rpx;
+  margin: 10rpx;
+}
+.image-plus {
+  border: 1px solid #999;
+  position: relative;
+}
+.image-plus-horizontal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: #d9d9d9;
+  width: 4rpx;
+  height: 80rpx;
+  transform: translate(-50%, -50%);
+}
+.image-plus-vertical {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: #d9d9d9;
+  width: 80rpx;
+  height: 4rpx;
+  transform: translate(-50%, -50%);
 }

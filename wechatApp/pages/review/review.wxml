@@ -1,33 +1,10 @@
 <import src="../../templates/toast/toast.wxml" />
-<template name="order-cell">
-    <view class="order-cell">
-        <view class="cell-status">
-        <!-- {{refund_status==="没有售后" ? order_status : "售后处理中"}} -->
-        </view>
-         
-          <block wx:for="{{items}}">
-          <navigator url="../products/products?id={{item.itemId}}" hover-class="none" class="cell-item">
-            <view class="{{items.length>0?'':'hide'}}" style="margin: 10rpx 0">
-             
-                <image class="good-thumb" src="{{apiHeader+item.pic_url_resize}}" alt="item"/>
-                <view class="item-content">
-                    <view class="content-name">{{item.name}}</view>
-                    <!-- <view class="content-attr">{{items[0].goods_attr}}</view> -->
-                    <view class="content-count">￥{{item.price}}<view class="content-amount">×{{item.num}}</view></view>
-                    <view style="clear:both"></view>
-                </view>
-             
-            </view>
-            </navigator> 
-           </block>
-        
-    </view>
-</template>
 
 <view class="orders-wrap" hidden="{{loading}}">
   <scroll-view scroll-y="true" class="orders">
     <view class="order-list {{orderList.length===0?'hide':''}}">
-      <block wx:for="{{orderList.items}}" wx:for-item="item">
+      <view style="border-bottom:1px dotted lightgray" wx:for="{{orderList.items}}" wx:for-item="item">
+        
         <view class="order-cell">
          
           <navigator url="../products/products?id={{item.itemId}}" hover-class="none" class="cell-item">
@@ -48,19 +25,47 @@
         <view class="comment1-description" style="display:flex;flex-direction:row;">
             <view class="comment1-description1">描述相符</view>
             <view  class="star-pos" style="display:flex;flex-direction:row;">
-                <view class="starsM  {{flag2>=1? '': 'hideStar'}}"  bindtap="changeColor11"></view>
-                <view class="starsM  {{flag2>=2? '': 'hideStar'}}"  bindtap="changeColor12"></view>
-                <view class="starsM  {{flag2>=3? '': 'hideStar'}}"  bindtap="changeColor13"></view>
-                <view class="starsM  {{flag2>=4? '': 'hideStar'}}"  bindtap="changeColor14"></view>
-                <view class="starsM  {{flag2>=5? '': 'hideStar'}}"  bindtap="changeColor15"></view>
+                <view class="starsM  {{stars[index]>=1? '': 'hideStar'}}" data-itemIndex="{{index}}"  bindtap="changeStar1"></view>
+                <view class="starsM  {{stars[index]>=2? '': 'hideStar'}}" data-itemIndex="{{index}}" bindtap="changeStar2"></view>
+                <view class="starsM  {{stars[index]>=3? '': 'hideStar'}}" data-itemIndex="{{index}}" bindtap="changeStar3"></view>
+                <view class="starsM  {{stars[index]>=4? '': 'hideStar'}}" data-itemIndex="{{index}}" bindtap="changeStar4"></view>
+                <view class="starsM  {{stars[index]>=5? '': 'hideStar'}}" data-itemIndex="{{index}}" bindtap="changeStar5"></view>
             </view>
         </view>
 
         <view class="section" style="display:flex;flex-direction:row;">
-          <textarea bindblur="bindTextAreaBlur" style="width:100%; padding:18rpx" placeholder="请留下您的评语哦" placeholder-style="padding-left:20rpx;"  />
+          <textarea data-itemIndex="{{index}}" bindblur="bindTextAreaBlur" style="width:100%; padding:18rpx" placeholder="请留下您的评语哦" placeholder-style="padding-left:20rpx;" bindinput="inputComment" />
         </view>
-      </block>
+
+       
+
+        <view style="padding:30rpx">
+          <view style="margin-top:40rpx">
+            <view>图片上传(最多5张)</view>
+          </view>
+
+          <view style="margin-top:20rpx">
+            <view class="left_text">
+              <view class="images-list">
+                <block wx:for="{{imageList[index]}}" wx:for-item="image" wx:for-index="smallIndex">
+                  <image src="{{image}}" class="images-image" data-itemIndex="{{smallIndex}}" data-index="{{index}}" data-src="{{image}}" bindtap="deleteImage"></image>
+                </block>
+
+                <!--图片达到五张以后隐藏-->
+                <view class="images-image image-plus" data-itemIndex="{{index}}" bindtap="chooseImage" wx:if="{{imageList[index].length<5}}">
+                  <view class="image-plus-horizontal"></view>
+                  <view class="image-plus-vertical"></view>
+                </view>
+              </view>
+            </view>
+            <view style="CLEAR:both;word-break:break-all;word-wrap:break-word;"></view>
+          </view>
+        </view>
+      </view>
+
     </view>
+
+    <button type="primary" style="width:94%; margin:60rpx auto 40rpx;" bindtap="uploadComment">提交</button>
   </scroll-view>
   <template is="toast" data="{{...toast}}" />
 </view>

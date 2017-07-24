@@ -1,6 +1,6 @@
 {
   "pages":[
-   
+    "pages/review/review",
     "pages/home/home",
     "pages/category/category",
     "pages/category-product/category-product",    
@@ -13,10 +13,9 @@
     "pages/address-edit/address-edit",
     "pages/order-detail/order-detail",
     "pages/deliver-detail/deliver-detail",
-    "pages/review/review",
+    
     "pages/feedback/feedback",
     "pages/addresses/addresses",
-    "pages/about/about",
     "pages/user/user-info/user-info",
     "pages/user/user-info/tel-bind/tel-bind",
     "pages/user/user-info/username-edit/username-edit",
@@ -25,7 +24,7 @@
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#000",
-    "navigationBarTitleText": "商城模版",
+    "navigationBarTitleText": "串门核雕",
     "navigationBarTextStyle":"#fff"
   },
   "tabBar": {
