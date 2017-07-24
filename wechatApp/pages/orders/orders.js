@@ -10,6 +10,7 @@ Page({
     loading: false,
     bottomNum: 1,
     hasToEnd: false,
+    hasToEnd: false,
     apiHeader: '',
 
     activeNav: 'all',
@@ -36,29 +37,22 @@ Page({
     //     activeNav: options.t
     //   });
     // }
-    wx.request({
-      url: API.APIDomian + '/wx/order/query',
-      data: {
-        'perPage': 5,
-        'pageNum': that.data.bottomNum
-      },
-      method: 'POST',
-      header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Cookie': app.globalData.sessionId
-      },
-      success: function (res) {
-        res.data.result.data.forEach(function(item){
-          item.apiHeader = API.APIDomian
-        });
-        that.setData({
-          orderList: res.data.result.data
-        })
-      },
-      fail: function () {
-        API.failTips('获取订单信息失败，请重新请求')
-      }
-    })
+    orderquery(that);
+
+  },
+
+  // 上拉加载
+  onReachBottom: function () {
+    if (!this.data.hasToEnd) {
+      var tempCount = this.data.bottomNum;
+      this.setData({
+        bottomNum: tempCount + 1
+      });
+      orderquery(this)
+    }
+    else {
+      API.failTips('已经到底啦！')
+    }
 
   },
 
@@ -82,67 +76,57 @@ Page({
   //   }
   // },
 
-  cancelOrder(e) {
+  //确认收货
+  confirmGoods(e){
+    const orderid = e.currentTarget.dataset.orderid;
     const that = this;
-    console.log(that)
-    const orderSn = e.target.dataset.orderSn;
     wx.showModal({
-    content: '你是否需要取消订单',
-    showCancel: true,
-    success: (res) => {
-       if(res.confirm == 0) {
-          return;
-        }
-        resource.cancalOrder(orderSn).then((res) => {
-           if (res.statusCode === 200 ) {
-              this.data.orderList.forEach((item,key) => {
-              if(item.order_sn == orderSn && that.data.activeNav != "all") {
-                  this.data.orderList.splice(key, 1);
-              } else {
-                 item.order_status = '订单取消';
+      title: '确认收货',
+      content: '是否确认收货？',
+      success: function (res) {
+        if (res.confirm) {
+          wx.request({
+            url: API.APIDomian + '/wx/order/confirm',
+            header: {
+              'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+              'Cookie': app.globalData.sessionId
+            },
+            method: 'POST',
+            data: {
+              'orderId': orderid
+            },
+            success: function (resItemData) {
+              if (resItemData.data.resp_code == '000000') {
+                    wx.showModal({
+                      content: '已成功确认收货',
+                      showCancel: false
+                    })
+                    that.setData({
+                      bottomNum: 1,
+                      hasToEnd: false,
+                      orderList:[]
+                    })
+                    orderquery(that);
               }
-             })
-              resource.showTips(that, '订单取消成功');
-              this.setData({orderList :this.setOrderData(this.data.orderList)});
-
-           } else {
-              resource.showTips(that, '订单取消失败');
-           }
-        });
+              else {
+                API.failTips('网络请求错误，请重新操作');
+              }
+            },
+            fail: function () {
+              API.failTips('网络请求错误，请重新操作');
+            }
+          })
+        } else if (res.cancel) {
+          
+        }
       }
-    });
+    })
   },
 
-   confirmOrder(e) {
-    const that = this;
-    console.log(that)
-    const orderSn = e.target.dataset.orderSn;
-    wx.showModal({
-    content: '确定收货',
-    showCancel: true,
-    success: (res) => {
-       if(res.confirm == 0) {
-          return;
-        }
-        resource.confirmOrder(orderSn).then((res) => {
-           if (res.statusCode === 200 ) {
-              this.data.orderList.forEach((item,key) => {
-              if(item.order_sn == orderSn && that.data.activeNav != "all") {
-                  this.data.orderList.splice(key, 1);
-              } else {
-                 item.order_status = '交易成功';
-              }
-             })
-              resource.showTips(that, '确认收货成功');
-              this.setData({orderList :this.setOrderData(this.data.orderList)});
-
-           } else {
-              resource.showTips(that, '确认收货失败');
-           }
-        });
-      }
-    });
-   },
+  //评价
+  commentGoods(e){
+    console.log(e)
+  },
 
   //继续付款
   payOrder(e) {
@@ -189,5 +173,70 @@ Page({
       }
     })
 
+  },
+
+  //查看详情
+  showDetails(e){
+    const phone = e.currentTarget.dataset.phone;
+    const timebegin = e.currentTarget.dataset.timebegin;
+    const username = e.currentTarget.dataset.username;
+    const totalprice = e.currentTarget.dataset.totalprice;
+    const freight = e.currentTarget.dataset.freight;
+    const address = e.currentTarget.dataset.address;
+    const orderid = e.currentTarget.dataset.orderid;
+    wx.navigateTo({
+      url: '../order-detail/order-detail?phone=' + phone + '&timebegin=' + timebegin +'&username='+username + '&totalprice=' + totalprice + '&freight=' + freight + '&address=' + address + '&orderid=' + orderid    });
+  },
+
+  //查看物流
+  checkDeliver(e){
+    const orderid = e.currentTarget.dataset.orderid;
+    wx.navigateTo({
+      url: '../deliver-detail/deliver-detail?orderid=' + orderid
+    });
   }
 });
+
+function orderquery(that){
+  wx.request({
+    url: API.APIDomian + '/wx/order/query',
+    data: {
+      'perPage': 5,
+      'pageNum': that.data.bottomNum
+    },
+    method: 'POST',
+    header: {
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      'Cookie': app.globalData.sessionId
+    },
+    success: function (res) {
+      // res.data.result.data.forEach(function (item) {
+      //   item.apiHeader = API.APIDomian
+      // });
+      // that.setData({
+      //   orderList: res.data.result.data
+      // })
+
+
+      var resJson = res.data.result.data;
+      var previousOrderData = that.data.orderList;
+      for (var i = 0; i < resJson.length; i++) {
+        resJson[i].apiHeader = API.APIDomian
+        previousOrderData.push(resJson[i])
+      }
+
+      that.setData({
+        orderList: previousOrderData
+      })
+
+      if (that.data.bottomNum == res.data.result.total_page) {
+        that.setData({
+          hasToEnd: true
+        })
+      }
+    },
+    fail: function () {
+      API.failTips('获取订单信息失败，请重新请求')
+    }
+  })
+}

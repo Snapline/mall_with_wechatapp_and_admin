@@ -1,0 +1,31 @@
+<view class="box">
+  <view class="header">
+    <view class="content">
+        <view class="status">订单号:{{orderId}}</view>
+        <view class="status">物流公司:{{expressCompany}}</view>
+        <view class="status">快递单号:{{expressId}}</view>
+        <view class="status">物流状态:
+          <span wx:if="{{ expressState===0}}">在途</span>
+          <span wx:if="{{ expressState===1}}">正在揽件</span>
+          <span wx:if="{{ expressState===2}}">疑难，寄送出问题</span>
+          <span wx:if="{{ expressState===3}}">已签收</span>
+          <span wx:if="{{ expressState===4}}">退签</span>
+          <span wx:if="{{ expressState===5}}">派件中</span>
+          <span wx:if="{{ expressState===6}}">退换</span>
+        </view>
+      
+    </view>
+  </view>
+
+    <view class="detail-box {{detailList.length<3?'has_trans':''}}">
+      <view wx:for="{{detailList}}" class="{{index == 0 ? 'detail-item active' : 'detail-item'}}">
+        <view class="icon_active">
+        </view>
+        <view class="right">
+          <view class="time">{{item.time}}</view>
+          <view class="info">{{item.context}}</view>
+        </view>
+      </view>
+    </view>
+
+</view>

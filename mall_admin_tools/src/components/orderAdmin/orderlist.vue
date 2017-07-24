@@ -8,12 +8,37 @@
 		<el-row style="margin-bottom:30px; margin-top:30px;">
 		  <el-col :span="24">
 		  	<div class="grid-content bg-purple-dark">
-		  	商品列表
-		  	<el-button class="newBtn" type="info" @click="createGoods">添加</el-button>
+		  	订单列表
+		  	
 		  	</div>
 		  </el-col>
 		</el-row>
 		
+		<!--发货弹窗-->
+		<el-dialog title="商品发货信息" v-model="sendGoodsVisible" size="small">
+			<el-form ref="deliverForm" :model="deliverForm" label-width="100px">
+				 <el-form-item label="商品订单">
+				      <span>{{chosenOrder}}</span>
+				  </el-form-item>
+				  <el-form-item label="快递公司" prop="deliverName">
+				      <el-select v-model="deliverForm.deliverName" placeholder="请选择">
+					    <el-option
+					      v-for="item in deliverList"
+					      :label="item.name"
+					      :value="item.name">
+					    </el-option>
+					  </el-select>
+				  </el-form-item>
+				  <el-form-item label="快递单号"  prop="deliverNo"
+				  :rules="[{ required: true, message: '单号不能为空'}]">
+				      <el-input v-model="deliverForm.deliverNo" placeholder="请输入快递单号" style="width:200px;"></el-input>
+				  </el-form-item>
+				   <el-form-item>
+				      <el-button type="success" @click="submitDeliver('deliverForm')">提交</el-button>
+				  </el-form-item>
+			</el-form>
+		   
+		</el-dialog>
 		
 		<!--用户列表-->
 		<el-table
@@ -22,39 +47,54 @@
 		    style="width: 100%">
 		    <el-table-column
 		      prop="orderId"
-		      label="订单号">
+		      label="订单号"
+		      min-width="130">
 		    </el-table-column>
 		    
 		    <el-table-column
-		      prop="buyer"
-		      label="买家名">
+		    	  prop="user_name"
+		    	  label="买家名"
+		    	  min-width="100">
 		    </el-table-column>
 		    
 		    <el-table-column
 		      prop="address"
-		      label="地址">
+		      label="地址"
+		      min-width="150">
 		    </el-table-column>
 		    
 		    <el-table-column
 		      prop="status"
-		      label="状态">
+		      label="状态"
+		      min-width="60">
 		    </el-table-column>
 		    
 		    <el-table-column
-		      prop="price"
-		      label="金额">
+		      prop="totalPrice"
+		      label="金额"
+		      min-width="80">
+		    </el-table-column>
+		    
+		     <el-table-column
+		      prop="totalPrice"
+		      label="快递单号"
+		      min-width="130">
+		       <template scope="scope">
+		        <span>{{scope.row.expressId==''?'暂未发货':scope.row.expressId}}</span>
+		      </template>
 		    </el-table-column>
 		    
 		    <el-table-column
-		      prop="date"
-		      label="日期">
+		      prop="timeBegin"
+		      label="日期"
+		      min-width="130">
 		    </el-table-column>
 		    
 		     <el-table-column
 		      label="操作"
-		      min-width="150">
+		      min-width="160">
 		      <template scope="scope">
-		        <el-button @click="sendGoods(scope.row.id)" type="warning" size="small">发货</el-button>
+		        <el-button @click="sendGoods(scope.row.orderId)" type="warning" size="small">发货</el-button>
 		        <el-button @click="checkDeliver(scope.row.id)" type="danger" size="small">查询物流</el-button>
 		      </template>
 		    </el-table-column>
@@ -74,68 +114,81 @@
 	import data from '../../mock/data.js'
 	export default {
 	    data() {
-	    	return {
-	        	//页码数据
-	        	curPage:1,
-	        	totalPage:10,
-	        	tableData:[] //表格数据
+	    		return {
+		        	//页码数据
+		        	curPage:1,
+		        	totalPage:10,
+		        	sendGoodsVisible: false,
+		        	chosenOrder: '',
+		        	deliverForm:{
+		        		'deliverName': '顺丰',
+		        		'deliverNo': ''
+		        	},
+		        	tableData:[], //表格数据
+		        	
+		        	//快递公司数组
+		        	deliverList:[{
+		        		'name': '顺丰'
+		        	},{
+		        		'name': '申通'
+		        	},{
+		        		'name': '圆通速递'
+		        	},{
+		        		'name': '中通速递'
+		        	},{
+		        		'name': '百世汇通'
+		        	},{
+		        		'name': '韵达快运'
+		        	},{
+		        		'name': '天天快递'
+		        	}]
 	      	};
 	    },
 	    created(){
-	    	this.cateInfoRequest(1);
+	    		this.orderInfoRequest(1);
 	    },
 	    methods:{
-		    editUser(id, realname, nickname, phonenum, roleids){
-		    	//初始化 打开弹窗，取消Tips显示，表单数据同步更新，隐藏表单的密码框，显示并重置修改的密码框，编辑状态为true
-	    		this.addUserTips = false;
-	    		this.isEditState = true;
-	    		this.newUserVisible = true;
-	    		if(this.$refs['newUserForm']){
-	    			this.$refs['newUserForm'].resetFields();
-	    		}
-	    		
-	    		this.newUserForm = {
-	    			editId: id,
-	        		realName: realname,
-	        		nickName: nickname,
-	        		phone: phonenum,
-	        		password:'123youcannotguess',//为了让表单验证通过，需要填写一个内置密码
-	        		editPassword:'',
-	        		roles:roleids
-	        	}
-		    },
-		    
-		    //删除
-		    deleteUser(id){
-		    	this.$confirm('是否删除该商品?', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消',
-		          type: 'warning'
-		        }).then(() => {
-		          	this.$http.post('api/ajax/user/remove', {'id':id}, {emulateJSON: true}).then(function (response) {
-		            	this.userInfoRequest(this.curPage)
-			            }, function (response) {
+		    	//弹出发货
+		    	sendGoods(orderid){
+		    		this.sendGoodsVisible = true;
+		    		this.chosenOrder = orderid;
+		    	},
+		    	//发货按钮
+		    	submitDeliver(formName){
+		    		 this.$refs[formName].validate((valid) => {
+		    		 	if(valid){
+		    		 		this.$http.put('api/admin/order/'+this.chosenOrder, {'expressId':this.deliverForm.deliverNo, 'expressCompany':this.deliverForm.deliverName}, {emulateJSON: true}).then(function (response) {
+	              			if(response.data.code=='000000'){
+	              				this.$message({
+						          message: '快递信息添加成功',
+						          type: 'success'
+						        });
+						        this.sendGoodsVisible = false;
+	              			}
+	              			else{
+	              				this.$message.error(response.data.msg);
+	              			}
+		                }, function (response) {
 							if(response.status == 401 || response.status == 403){
 								//session过期
 								this.$router.push({ path: 'login'})
 							}
 							else{
-								alert('对不起，删除商品失败，请重新请求！');
+								alert('对不起，请求错误，请重新请求哦！');
 							}
-			            })
-			       
-		        }).catch(() => {
-		          this.$message({
-		            type: 'info',
-		            message: '已取消'
-		          });          
-		        });
-		    },
+							
+		                })
+		    		 	}
+			    		else{
+			    		 	return false
+			    		}
+		    		 })
+		    	},
 		    //获取
-		    cateInfoRequest(oPage){
-		    	var self = this;
-            	self.$http.post('/orderInfo', {}, {emulateJSON: true}).then(function (response) {
-              		this.tableData = response.data.orderInfo;
+		    orderInfoRequest(oPage){
+	            	this.$http.get('api/admin/orders?perPage=10&pageNum='+this.curPage, {}, {emulateJSON: true}).then(function (response) {
+              		this.tableData = response.data.data;
+              		this.totalPage = response.data.total_page*10;
                 }, function (response) {
 					if(response.status == 401 || response.status == 403){
 						//session过期
@@ -149,8 +202,8 @@
 		    },
 		    //翻页
 		    changePage(val){
-		    	this.curPage = val;
-		    	this.cateInfoRequest(val)
+			    	this.curPage = val;
+			    	this.orderInfoRequest(val)
 		    }
 	    }
 	};

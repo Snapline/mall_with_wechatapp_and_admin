@@ -1,0 +1,67 @@
+<import src="../../templates/toast/toast.wxml" />
+<template name="order-cell">
+    <view class="order-cell">
+        <view class="cell-status">
+        <!-- {{refund_status==="没有售后" ? order_status : "售后处理中"}} -->
+        </view>
+         
+          <block wx:for="{{items}}">
+          <navigator url="../products/products?id={{item.itemId}}" hover-class="none" class="cell-item">
+            <view class="{{items.length>0?'':'hide'}}" style="margin: 10rpx 0">
+             
+                <image class="good-thumb" src="{{apiHeader+item.pic_url_resize}}" alt="item"/>
+                <view class="item-content">
+                    <view class="content-name">{{item.name}}</view>
+                    <!-- <view class="content-attr">{{items[0].goods_attr}}</view> -->
+                    <view class="content-count">￥{{item.price}}<view class="content-amount">×{{item.num}}</view></view>
+                    <view style="clear:both"></view>
+                </view>
+             
+            </view>
+            </navigator> 
+           </block>
+        
+    </view>
+</template>
+
+<view class="orders-wrap" hidden="{{loading}}">
+  <scroll-view scroll-y="true" class="orders">
+    <view class="order-list {{orderList.length===0?'hide':''}}">
+      <block wx:for="{{orderList.items}}" wx:for-item="item">
+        <view class="order-cell">
+         
+          <navigator url="../products/products?id={{item.itemId}}" hover-class="none" class="cell-item">
+            
+             
+            <image class="good-thumb" src="{{item.apiHeader+item.pic_url_resize}}" alt="item"/>
+            <view class="item-content">
+                <view class="content-name">{{item.name}}</view>
+                <!-- <view class="content-attr">{{items[0].goods_attr}}</view> -->
+                <view class="content-count">￥{{item.price}}</view>
+                <view style="clear:both"></view>
+            </view>
+             
+          </navigator> 
+        
+        </view>
+
+        <view class="comment1-description" style="display:flex;flex-direction:row;">
+            <view class="comment1-description1">描述相符</view>
+            <view  class="star-pos" style="display:flex;flex-direction:row;">
+                <view class="starsM  {{flag2>=1? '': 'hideStar'}}"  bindtap="changeColor11"></view>
+                <view class="starsM  {{flag2>=2? '': 'hideStar'}}"  bindtap="changeColor12"></view>
+                <view class="starsM  {{flag2>=3? '': 'hideStar'}}"  bindtap="changeColor13"></view>
+                <view class="starsM  {{flag2>=4? '': 'hideStar'}}"  bindtap="changeColor14"></view>
+                <view class="starsM  {{flag2>=5? '': 'hideStar'}}"  bindtap="changeColor15"></view>
+            </view>
+        </view>
+
+        <view class="section" style="display:flex;flex-direction:row;">
+          <textarea bindblur="bindTextAreaBlur" style="width:100%; padding:18rpx" placeholder="请留下您的评语哦" placeholder-style="padding-left:20rpx;"  />
+        </view>
+      </block>
+    </view>
+  </scroll-view>
+  <template is="toast" data="{{...toast}}" />
+</view>
+<loading hidden="{{!loading}}">正在加载中...</loading>

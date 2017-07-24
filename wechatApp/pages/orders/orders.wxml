@@ -4,8 +4,9 @@
         <view class="cell-status">
         <!-- {{refund_status==="没有售后" ? order_status : "售后处理中"}} -->
         </view>
-         <navigator url="../order-detail/order-detail?subOrderSn={{sub_order_sn}}" hover-class="none" class="cell-item">
+         
           <block wx:for="{{items}}">
+          <navigator url="../products/products?id={{item.itemId}}" hover-class="none" class="cell-item">
             <view class="{{items.length>0?'':'hide'}}" style="margin: 10rpx 0">
              
                 <image class="good-thumb" src="{{apiHeader+item.pic_url_resize}}" alt="item"/>
@@ -17,11 +18,12 @@
                 </view>
              
             </view>
+            </navigator> 
            </block>
             <!-- <scroll-view scroll-x="true" class="{{goods.length===1?'hide':''}}">
                 <view style="display:inline-block;" wx:for="{{items}}"><image class="good-thumb" src="{{item.thumb_url}}"></image></view>
             </scroll-view> -->
-        </navigator> 
+        
         <view class="cell-count">
             <!-- <view class="count-amount">共{{goods.length}}件商品</view> -->
             <view class="count-price">￥{{totalPrice}}</view>
@@ -29,10 +31,10 @@
         </view>
         <view class="cell-btn">
           <button data-orderid="{{orderId}}" class="btn-order btn-solid-red" wx:if="{{ status_num===2 }}" bindtap="payOrder">付款</button>
-          <button class="btn-order btn-solid-blue" wx:if="{{ status_num===4 }}" bindtap="checkDeliver">查看物流</button>
-          <button class="btn-order btn-solid-green" wx:if="{{ status_num===5 }}" bindtap="confirmGoods">确认收货</button>
+          <button class="btn-order btn-solid-blue" data-orderid="{{orderId}}" wx:if="{{ status_num===4 }}" bindtap="checkDeliver">查看物流</button>
+          <button class="btn-order btn-solid-green" data-orderid="{{orderId}}" wx:if="{{ status_num===4 || status_num===5 }}" bindtap="confirmGoods">确认收货</button>
           <button class="btn-order btn-solid-pink" wx:if="{{ status_num===6 }}" bindtap="commentGoods">评价商品</button>
-          <button class="btn-order btn-solid-default" bindtap="showDetails">显示详情</button>
+          <button data-phone="{{phone}}" data-username="{{user_name}}" data-address="{{address}}" data-freight="{{expressPrice}}" data-totalPrice="{{totalPrice}}" data-timebegin="{{timeBegin}}" data-orderid="{{orderId}}" class="btn-order btn-solid-default" bindtap="showDetails">显示详情</button>
          
         </view>
     </view>
