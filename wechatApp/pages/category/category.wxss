@@ -1,5 +1,8 @@
 
 /**index.wxss**/
+page{
+  background: #F5F5F7;
+}
 .searchBox{
   width:94%;
   margin: 10rpx auto 20rpx;

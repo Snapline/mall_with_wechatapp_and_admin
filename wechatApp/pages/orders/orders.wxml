@@ -30,11 +30,11 @@
             <view class="count-carriage">运费：<text>￥{{expressPrice}}</text></view>
         </view>
         <view class="cell-btn">
-          <button data-orderid="{{orderId}}" class="btn-order btn-solid-red" wx:if="{{ status_num===2 }}" bindtap="payOrder">付款</button>
+          <button data-orderid="{{orderId}}" class="btn-order btn-solid-red" wx:if="{{ status_num===2 }}" bindtap="payOrder">继续付款</button>
           <button class="btn-order btn-solid-blue" data-orderid="{{orderId}}" wx:if="{{ status_num===4 }}" bindtap="checkDeliver">查看物流</button>
           <button class="btn-order btn-solid-green" data-orderid="{{orderId}}" wx:if="{{ status_num===4 || status_num===5 }}" bindtap="confirmGoods">确认收货</button>
-          <button class="btn-order btn-solid-pink" wx:if="{{ status_num===6 }}" bindtap="commentGoods">评价商品</button>
-          <button data-phone="{{phone}}" data-username="{{user_name}}" data-address="{{address}}" data-freight="{{expressPrice}}" data-totalPrice="{{totalPrice}}" data-timebegin="{{timeBegin}}" data-orderid="{{orderId}}" class="btn-order btn-solid-default" bindtap="showDetails">显示详情</button>
+          <button class="btn-order btn-solid-pink" data-orderid="{{orderId}}" wx:if="{{ status_num===6 }}" bindtap="commentGoods">评价商品</button>
+          <button data-statusdes="{{status}}" data-phone="{{phone}}" data-username="{{user_name}}" data-address="{{address}}" data-freight="{{expressPrice}}" data-totalPrice="{{totalPrice}}" data-timebegin="{{timeBegin}}" data-orderid="{{orderId}}" class="btn-order btn-solid-default" bindtap="showDetails">显示详情</button>
          
         </view>
     </view>

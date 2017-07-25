@@ -10,7 +10,6 @@ Page({
     loading: false,
     bottomNum: 1,
     hasToEnd: false,
-    hasToEnd: false,
     apiHeader: '',
 
     activeNav: 'all',
@@ -29,7 +28,7 @@ Page({
     }],
     orderList: []
   },
-  onLoad(options) {
+  onShow() {
     const that = this;
     //区别nav上的订单类型，暂时不显示
     // if (options.t) {
@@ -37,6 +36,9 @@ Page({
     //     activeNav: options.t
     //   });
     // }
+    that.setData({
+      orderList:[]
+    })
     orderquery(that);
 
   },
@@ -125,7 +127,10 @@ Page({
 
   //评价
   commentGoods(e){
-    console.log(e)
+    const orderid = e.currentTarget.dataset.orderid;
+    wx.navigateTo({
+      url: '../review/review?orderid=' + orderid
+    });
   },
 
   //继续付款
@@ -184,8 +189,9 @@ Page({
     const freight = e.currentTarget.dataset.freight;
     const address = e.currentTarget.dataset.address;
     const orderid = e.currentTarget.dataset.orderid;
+    const statusText = e.currentTarget.dataset.statusdes;
     wx.navigateTo({
-      url: '../order-detail/order-detail?phone=' + phone + '&timebegin=' + timebegin +'&username='+username + '&totalprice=' + totalprice + '&freight=' + freight + '&address=' + address + '&orderid=' + orderid    });
+      url: '../order-detail/order-detail?phone=' + phone + '&timebegin=' + timebegin + '&username=' + username + '&totalprice=' + totalprice + '&freight=' + freight + '&address=' + address + '&orderid=' + orderid + '&status=' + statusText    });
   },
 
   //查看物流

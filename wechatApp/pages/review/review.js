@@ -8,16 +8,15 @@ Page({
     stars:[],
     imageList:[],
     commentList:[],
-    orderId:'2017072117183660002'
+    orderId:'',
+    successCount:0
   },
-  onLoad(optios) {
-    app.getUserInfo();
+  onLoad(options) {
     const that = this;
-    setTimeout(function(){
       wx.request({
         url: API.APIDomian + '/wx/order/query_detail',
         data: {
-          'orderId': '2017072117183660002'
+          'orderId': options.orderid
         },
         method: 'POST',
         header: {
@@ -38,7 +37,8 @@ Page({
             orderList: res.data.result.data,
             stars: starsArr,
             imageList: ImageArr,
-            commentList: commentArr
+            commentList: commentArr,
+            orderId: options.orderid
           });
 
         },
@@ -46,7 +46,6 @@ Page({
           API.failTips('获取订单信息失败，请重新请求')
         }
       })
-    },1000)
    
 
   },
@@ -199,7 +198,28 @@ function uploadContent(index, that) {
         'Cookie': app.globalData.sessionId
       },
       success: function (res) {
-        console.log(res)
+        if (res.data.resp_code = '000000') {
+          var oSuccessCount = that.data.successCount;
+          oSuccessCount = oSuccessCount + 1;
+          that.setData({
+            successCount: oSuccessCount
+          })
+        }
+        if (that.data.successCount == that.data.stars.length) {
+          //成功次数吻合，返回页面
+          wx.showToast({
+            title: '评论成功,正在返回',
+            icon: 'success',
+            duration: 1000,
+            mask: true
+          })
+
+          setTimeout(function () {
+            wx.navigateBack({
+              delta: 1
+            })
+          }, 1000)
+        }
       },
       fail: function () {
         API.failTips('评论失败')
@@ -221,13 +241,34 @@ function uploadContent(index, that) {
           'stars': that.data.stars[index]
         },
         header: {
-          "Content-Type": "multipart/form-data",
           'Cookie': app.globalData.sessionId
         },
         method:'POST',
         success: function (res) {
+          if (res.data.indexOf('000000')>-1){
+            var oSuccessCount = that.data.successCount;
+            oSuccessCount = oSuccessCount+1;
+            that.setData({
+              successCount:oSuccessCount
+            })
+          }
+          if (that.data.successCount == that.data.stars.length){
+            //成功次数吻合，返回页面
+            wx.showToast({
+              title: '评论成功,正在返回',
+              icon: 'success',
+              duration:1000,
+              mask: true
+            })
 
-          console.log(res)
+            setTimeout(function(){
+              wx.navigateBack({
+                delta: 1
+              })
+            },1000)
+            
+           
+          }
         },
         fail: function (e) {
           console.log(e);

@@ -1,0 +1,19 @@
+<view wx:for="{{commentList}}" wx:for-item="item" wx:for-index="bigIndex">
+  <view class="comment_item">
+    <view class="image_area">
+        <image src="{{item.user_pic}}"></image>
+    </view>
+    <view class="text_area">
+        <view class="comment_name">{{item.user_name}}</view>
+        <view class="content">{{item.comment}}</view>
+        <view class="comment_pics" wx:if="{{item.pic.length>0}}">
+          <view wx:for="{{item.pic}}" wx:for-item="imageItem" style="display:inline-block">
+            <image data-commentindex="{{bigIndex}}" data-imgsrc="{{imageItem.full_url}}" src="{{imageItem.full_url}}" bindtap="zoomPics"></image>
+          </view>
+          
+        </view>
+        <view class="date_area">{{item.addtime}}</view>
+    </view>
+  </view>
+
+</view>

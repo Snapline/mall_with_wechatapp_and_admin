@@ -58,6 +58,9 @@ Page({
             url: '../cart/cart'
           });
         }
+        else{
+          API.failTips('购物车添加失败，请重试')
+        }
         
 
       },

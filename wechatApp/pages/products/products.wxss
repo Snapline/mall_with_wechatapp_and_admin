@@ -40,7 +40,6 @@ swiper-item image {
 
 .product-price {
     display: block;
-    color: orange;
 }
 
 .product-market {

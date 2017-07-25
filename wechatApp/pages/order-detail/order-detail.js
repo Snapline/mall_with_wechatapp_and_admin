@@ -19,7 +19,8 @@ Page({
       'order_amount': options.totalprice,
       'shipping_price': options.freight,
       'order_sn': options.orderid,
-      'created_at': options.timebegin
+      'created_at': options.timebegin,
+      'status': options.status
     }
     this.setData({
       address: addressObj,

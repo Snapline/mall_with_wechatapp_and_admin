@@ -1,4 +1,4 @@
- <text style="font-weight:bold; font-size:34rpx;margin-top:30rpx; margin-bottom:30rpx; margin-left:20rpx;">类别： {{cateName}}</text>
+ <text style="font-size:30rpx;margin-top:30rpx; margin-bottom:30rpx; margin-left:20rpx;">类别： {{cateName}}</text>
   <view  class="section feature-list" >
 
           <view wx:if="{{features.length == 0}}" class="feature clearfix" data-goods-id="{{feature.id}}">

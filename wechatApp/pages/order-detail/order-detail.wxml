@@ -13,7 +13,8 @@
   <view class="item-amount">
   <view>收货人<text>{{address.consignee}}</text></view>
   <view>联系电话<text>{{address.mobile}}</text></view>
-  <view>地址<text>{{address.address}}</text></view>
+  <view>地址<text>{{address.detail_address}}</text></view>
+   <view>订单状态<text>{{order.status}}</text></view>
     <view>商品总额<text>￥{{order.order_amount}}</text></view>
     <view class="colora0">+运费<text>￥{{order.shipping_price}}</text></view>
     <!-- <view>实付款(含运费)<text style="color: #ff2d4b;font-size: 35.15rpx;">￥{{order.total_amount}}</text></view> -->
