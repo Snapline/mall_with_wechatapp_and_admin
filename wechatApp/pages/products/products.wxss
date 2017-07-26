@@ -1,3 +1,4 @@
+@import "../comment/comment.wxss";
 .page{
     height: 100%;
     background-color: #f8f8f8;
@@ -27,9 +28,11 @@ swiper-item image {
 }
 
 .product-detail {
-    width:90%;
+    /* width:90%; */
     margin: 0 auto;
-    padding-left: 10rpx;
+    /* padding-left: 10rpx; */
+    padding:20rpx;
+    border-bottom: 1px solid #D4D4D4;
 }
 
 .product-name {
@@ -40,6 +43,7 @@ swiper-item image {
 
 .product-price {
     display: block;
+    margin-top:10rpx;
 }
 
 .product-market {
@@ -59,6 +63,7 @@ swiper-item image {
     float: right;
     font-size: 28rpx;
     padding-right: 10rpx;
+    line-height: 50rpx;
 }
 
 .product-recommend {

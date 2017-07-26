@@ -26,23 +26,24 @@
   font-size:30rpx;
   color: #3F3F3F;
   word-break: break-word;
-  min-height: 150rpx;
+  /* min-height: 150rpx; */
 }
 
 .comment_name{
-  line-height: 34rpx;
-  font-size:34rpx;
+  line-height: 32rpx;
+  font-size:32rpx;
   position: absolute;
+  font-weight: bold;
   top:0;
 }
 
 .content{
-  padding: 38rpx 0;
+  padding: 38rpx 0 10rpx 0;
 }
 
-.comment_pics{
+/* .comment_pics{
   padding-bottom:34rpx;
-}
+} */
 
 .comment_pics image{
   width:120rpx;
@@ -54,7 +55,21 @@
 .date_area{
    line-height: 28rpx;
   font-size:28rpx;
-  position: absolute;
-  bottom:0;
+  margin-top:14rpx;
+  /* position: absolute;
+  bottom:0; */
   color: #B0B0B0;
+}
+
+.replay_area{
+  background:#F5F5F7;
+}
+
+.replyName{
+  color:orange;
+  font-size: 28rpx;
+}
+
+.reply_content{
+  padding: 10rpx 0;
 }

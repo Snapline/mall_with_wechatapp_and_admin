@@ -29,14 +29,35 @@
         <button class="add-car" data-productname="{{product.name}}" data-productid="{{product.id}}" data-price="{{product.price}}" data-storenum="{{product.num}}"  data-soldnum="{{product.sales_num}}" bindtap="addCar">立即购买</button>
     </view>
     
-    <view class="product-recommend">
-          <view class="product-price">
-              <text>用户评价({{product.score_num}}条)</text>
-              <text class="product-sold">查看更多</text>
-          </view>
-          <view class="con-text-center">
-              <image src="{{product.detail}}" mode="scaleToFill"></image>
-          </view>
+    <view wx:if="{{commentNum>0}}">
+      <view class="product-price">
+          <text style="font-size:30rpx; padding-left:10rpx">用户评价({{commentNum}}条)</text>
+          <text class="product-sold" bindtap="moreComment">查看更多</text>
+      </view>
+
+      <view class="comment_item"  wx:for="{{commentInfo}}" wx:for-item="item" wx:for-index="bigIndex">
+        <view class="image_area">
+            <image src="{{item.user_pic}}"></image>
+        </view>
+        <view class="text_area">
+            <view class="comment_name">{{item.user_name}}</view>
+            <view class="content">{{item.comment}}</view>
+            <view class="comment_pics" wx:if="{{item.pic.length>0}}">
+              <view wx:for="{{item.pic}}" wx:for-item="imageItem" style="display:inline-block">
+                <image data-imgsrc="{{imageItem.full_url}}" src="{{imageItem.full_url}}" bindtap="zoomPics"></image>
+              </view>
+              
+            </view>
+
+             <!-- 商家回复 -->
+            <view class="replay_area" wx:if="{{item.reply!==''}}">
+              <view class="replyName">掌柜回复:</view>
+              <view class="reply_content">{{item.reply}}</view>
+            </view>
+            <view class="date_area">{{item.addtime}}</view>
+        </view>
+      </view>
+
     </view>
 
     <view class="product-recommend">

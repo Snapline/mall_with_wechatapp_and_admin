@@ -12,6 +12,11 @@
           </view>
           
         </view>
+        <!-- 商家回复 -->
+        <view class="replay_area" wx:if="{{item.reply!==''}}">
+          <view class="replyName">掌柜回复:</view>
+          <view class="reply_content">{{item.reply}}</view>
+        </view>
         <view class="date_area">{{item.addtime}}</view>
     </view>
   </view>

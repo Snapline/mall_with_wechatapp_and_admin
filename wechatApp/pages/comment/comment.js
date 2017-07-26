@@ -4,6 +4,7 @@ const app = getApp();
 Page({
   data: {
     commentList:[],
+    itemId: 0,
     bottomNum: 1,
     hasToEnd: false,
     apiHeader: ''
@@ -11,6 +12,9 @@ Page({
 
   onLoad: function (options) {
     const that = this;
+    that.setData({
+      itemId: options.itemId
+    })
     commentquery(that)
   },
 
@@ -54,9 +58,9 @@ function commentquery(that) {
   wx.request({
     url: API.APIDomian + '/wx/item/comment',
     data: {
-      'item_id': 3,
-      'perPage': 10,
-      'pageNum': that.data.bottomNum
+      'item_id': that.data.itemId,
+      'per_page': 10,
+      'page_num': that.data.bottomNum
     },
     method: 'POST',
     header: {
