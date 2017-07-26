@@ -37,7 +37,7 @@
 			</el-form-item>	
 				
 			  <el-form-item>
-			    <el-button style="margin-left:100px;" type="primary"  @click="submitForm('changePwdForm')">提交</el-button>
+			    <el-button type="primary"  @click="submitForm('changePwdForm')">提交</el-button>
 			  </el-form-item>
 			</el-form>
 	</div>
@@ -51,12 +51,6 @@
 	    		if(!value){
 	    			callback(new Error('密码不得为空'));
 	    		}
-	    		else if(value.length<6 || value.length>32){
-	    			callback(new Error('密码过长或过短'));
-	    		}
-	    		else if (!/[\da-zA-Z_]*\d+[a-zA-Z]+[\da-zA-Z_]*/.test(value) && !/[\da-zA-Z_]*[a-zA-Z]+\d+[\da-zA-Z_]*/.test(value)){
-	        		callback(new Error('密码必须同时包含字母和数字'));
-	        	}
 	        	else{
 	        		callback()
 	        	}
@@ -82,12 +76,11 @@
 		          if (valid) {
 		          	if(this.changePwdForm.newpwd == this.changePwdForm.repeatPwd){
 		          		var submitData = {
-		          			'oldPassword': this.changePwdForm.oldpwd,
-		          			'newPassword1': this.changePwdForm.newpwd,
-		          			'newPassword2': this.changePwdForm.repeatPwd
+		          			'password': this.changePwdForm.oldpwd,
+		          			'new_password': this.changePwdForm.newpwd
 		          		}
-		          		this.$http.post('api/ajax/user/changePassword', submitData, {emulateJSON: true}).then(function (response) {
-		          			if(response.data.code==0){
+		          		this.$http.post('api/admin/auth/passwd/reset', submitData, {emulateJSON: true}).then(function (response) {
+		          			if(response.data.respCode=='000000'){
 		          				//成功了
 		          				this.$message({
 						          message: '修改密码成功！',
@@ -98,7 +91,7 @@
 		          			}
 		          			else{
 		          				this.$message({
-						          message: '修改失败，请联系开发者！',
+						          message: response.data.respMsg,
 						          type: 'info'
 						        });
 		          			}

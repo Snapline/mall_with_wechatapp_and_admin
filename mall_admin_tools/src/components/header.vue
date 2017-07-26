@@ -4,7 +4,7 @@
         <div class="user-info">
             <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
-                   	<span style="margin-right:20px;">{{userName}}</span>
+                   	<!--<span style="margin-right:20px;">{{userName}}</span>-->
                     <el-button @click="logout">退出</el-button>
                 </span>
                 <!--<el-dropdown-menu slot="dropdown">
@@ -18,7 +18,7 @@
     export default {
         data() {
             return {
-                userName: 'gaoyang'
+                userName: ''
             }
         },
 		created(){
@@ -30,9 +30,9 @@
 		},
         methods:{
             logout(){
-            	this.$http.post('api/auth/logout', {}, {emulateJSON: true}).then(function (response) {
+            	this.$http.post('api/admin/auth/logout', {}, {emulateJSON: true}).then(function (response) {
 	        		console.log(response)
-	          		if(response.data.resp_code=='000000'){
+	          		if(response.data.respCode=='000000'){
 	          			this.$router.push({ path: 'login'})
 	          		}
 	          		else{

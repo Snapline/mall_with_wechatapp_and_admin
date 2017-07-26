@@ -64,26 +64,26 @@ Page({
          userInfo: userInfo
        })
     })
-    wx.request({
-      url: API.APIDomian + 'paidNum',
-      data: {},
-      method: 'GET',
-      header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-      },
-      success: function (res) {
+    // wx.request({
+    //   url: API.APIDomian + 'paidNum',
+    //   data: {},
+    //   method: 'GET',
+    //   header: {
+    //     'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    //   },
+    //   success: function (res) {
 
-        that.data.orderCell[0].count = res.data.unpaid;
-        that.data.orderCell[1].count = res.data.undelivered;
-        that.data.orderCell[2].count = res.data.unreceived;
-        that.setData({
-          orderCell: that.data.orderCell
-        });
-      },
-      fail: function () {
-        API.failTips('订单信息获取失败，请重试')
-      }
-    })
+    //     that.data.orderCell[0].count = res.data.unpaid;
+    //     that.data.orderCell[1].count = res.data.undelivered;
+    //     that.data.orderCell[2].count = res.data.unreceived;
+    //     that.setData({
+    //       orderCell: that.data.orderCell
+    //     });
+    //   },
+    //   fail: function () {
+    //     API.failTips('订单信息获取失败，请重试')
+    //   }
+    // })
   },
   onLoad() {
     this.setData({

@@ -63,11 +63,9 @@
 		    	this.$prompt('修改'+province+'地区的运费', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
-		          inputPattern: /^\d+$/,
-		          inputErrorMessage: '请输入数字'
 		        }).then(({ value }) => {
 		          	_this.$http.put('api/admin/express_price', {'province':province, 'price':value}, {emulateJSON: true}).then(function (response) {
-	        			if(response.data.code='000000'){
+	        			if(response.data.code=='000000'){
 	        				_this.$message({
 					          message: '运费修改成功',
 					          type: 'success'

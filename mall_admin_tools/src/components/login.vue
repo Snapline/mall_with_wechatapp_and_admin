@@ -32,12 +32,11 @@ export default {
     methods: {
     	loginSubmit(){
     		var self = this;
-        	self.$http.post('api/login', {'uid':self.loginForm.username,'password':self.loginForm.password}, {emulateJSON: true}).then(function (response) {
-//      		52778865
-          		if(response.data.code=='200'){
+        	self.$http.post('api/admin/auth/login', {'name':self.loginForm.username,'password':self.loginForm.password}, {emulateJSON: true}).then(function (response) {
+          		if(response.data.respCode=='000000'){
           			//登录成功
           			this.error = false
-          			this.$router.push({ path: '/userinfo'})
+          			this.$router.push({ path: '/goodslist'})
           		}
           		else{
           			this.error = true

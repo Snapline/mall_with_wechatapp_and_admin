@@ -65,7 +65,7 @@
               宝贝详情
           </view>
           <view class="con-text-center" wx:for="{{descPics}}" wx:for-item="descItem">
-              <image src="{{apiHeader+descItem.pic_url}}" mode="scaleToFill"></image>
+              <image src="{{apiHeader+descItem.pic_url}}" mode="widthFix"></image>
           </view>
     </view>
     
