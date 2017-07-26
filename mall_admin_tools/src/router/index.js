@@ -90,6 +90,19 @@ export default new Router({
             	}
             ]
         },
+        
+        //评论管理
+         //评论列表
+         {
+            path: '/commentlist',
+            component: resolve => require(['../components/home.vue'], resolve),
+            children:[
+            	{
+            		path: '/',
+            		component: resolve => require(['../components/commentAdmin/comment.vue'], resolve)
+            	}
+            ]
+        },
           //运费管理
          //运费列表
          {
@@ -99,6 +112,19 @@ export default new Router({
             	{
             		path: '/',
             		component: resolve => require(['../components/freightAdmin/freightlist.vue'], resolve)
+            	}
+            ]
+        },
+        
+         //系统设置
+         //修改密码
+         {
+            path: '/changepwd',
+            component: resolve => require(['../components/home.vue'], resolve),
+            children:[
+            	{
+            		path: '/',
+            		component: resolve => require(['../components/settings/settings.vue'], resolve)
             	}
             ]
         },

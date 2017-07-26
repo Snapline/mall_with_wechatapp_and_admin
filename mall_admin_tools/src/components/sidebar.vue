@@ -37,6 +37,13 @@
     					linkIndex: 'orderlist',
     				}]
     			},{
+    				title: '评论管理',
+    				linkIndex: 'commentadmin',
+    				children:[{
+    					title: '评论列表',
+    					linkIndex: 'commentlist',
+    				}]
+    			},{
     				title: '运费管理',
     				linkIndex: 'freightadmin',
     				children:[{
@@ -47,8 +54,8 @@
     				title: '系统设置',
     				linkIndex: 'settings',
     				children:[{
-    					title: '修改资料',
-    					linkIndex: 'profile',
+    					title: '修改密码',
+    					linkIndex: 'changepwd',
     				}]
     			}]
     		}

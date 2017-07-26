@@ -20,6 +20,7 @@
 				 <el-form-item label="商品订单">
 				      <span>{{chosenOrder}}</span>
 				  </el-form-item>
+				  
 				  <el-form-item label="快递公司" prop="deliverName">
 				      <el-select v-model="deliverForm.deliverName" placeholder="请选择">
 					    <el-option
@@ -29,15 +30,30 @@
 					    </el-option>
 					  </el-select>
 				  </el-form-item>
+				  
 				  <el-form-item label="快递单号"  prop="deliverNo"
 				  :rules="[{ required: true, message: '单号不能为空'}]">
 				      <el-input v-model="deliverForm.deliverNo" placeholder="请输入快递单号" style="width:200px;"></el-input>
 				  </el-form-item>
-				   <el-form-item>
-				      <el-button type="success" @click="submitDeliver('deliverForm')">提交</el-button>
+				  
+				   <el-form-item label="操作">
+				      <el-button type="primary" @click="submitDeliver('deliverForm')">提交</el-button>
 				  </el-form-item>
 			</el-form>
 		   
+		</el-dialog>
+		
+		
+		<!--查看物流弹窗-->
+		<el-dialog title="订单进度" v-model="deliverVisible" size="samll">
+		    <p v-for="(item, index) in deliverInfo" style="margin:20px" :class="index==0?'redDeliver':''" >
+		    	<label style="margin-right:10px">{{item.time}}</label>
+		    	<span>{{item.context2}}</span>
+		    </p>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button @click="deliverVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="deliverVisible = false">确 定</el-button>
+		  </span>
 		</el-dialog>
 		
 		<!--用户列表-->
@@ -60,19 +76,19 @@
 		    <el-table-column
 		      prop="address"
 		      label="地址"
-		      min-width="150">
+		      min-width="250">
 		    </el-table-column>
 		    
 		    <el-table-column
 		      prop="status"
 		      label="状态"
-		      min-width="60">
+		      min-width="130">
 		    </el-table-column>
 		    
 		    <el-table-column
 		      prop="totalPrice"
 		      label="金额"
-		      min-width="80">
+		      min-width="120">
 		    </el-table-column>
 		    
 		     <el-table-column
@@ -87,15 +103,15 @@
 		    <el-table-column
 		      prop="timeBegin"
 		      label="日期"
-		      min-width="130">
+		      min-width="200">
 		    </el-table-column>
 		    
 		     <el-table-column
 		      label="操作"
-		      min-width="160">
+		      min-width="190">
 		      <template scope="scope">
-		        <el-button @click="sendGoods(scope.row.orderId)" type="warning" size="small">发货</el-button>
-		        <el-button @click="checkDeliver(scope.row.id)" type="danger" size="small">查询物流</el-button>
+		        <el-button @click="sendGoods(scope.row.orderId)" v-show="scope.row.status_num==3 || scope.row.status_num==4" type="warning" size="small">发货</el-button>
+		        <el-button @click="checkDeliver(scope.row.orderId)" :disabled="scope.row.expressId==''" type="danger" size="small">查询物流</el-button>
 		      </template>
 		    </el-table-column>
 		  </el-table>
@@ -119,12 +135,14 @@
 		        	curPage:1,
 		        	totalPage:10,
 		        	sendGoodsVisible: false,
+		        	deliverVisible: false,
 		        	chosenOrder: '',
 		        	deliverForm:{
 		        		'deliverName': '顺丰',
 		        		'deliverNo': ''
 		        	},
 		        	tableData:[], //表格数据
+		        	deliverInfo:[], //快递查询数组
 		        	
 		        	//快递公司数组
 		        	deliverList:[{
@@ -145,7 +163,7 @@
 	      	};
 	    },
 	    created(){
-	    		this.orderInfoRequest(1);
+	    		this.orderInfoRequest();
 	    },
 	    methods:{
 		    	//弹出发货
@@ -164,6 +182,7 @@
 						          type: 'success'
 						        });
 						        this.sendGoodsVisible = false;
+						        this.orderInfoRequest()
 	              			}
 	              			else{
 	              				this.$message.error(response.data.msg);
@@ -184,8 +203,26 @@
 			    		}
 		    		 })
 		    	},
+		    	
+		    	//弹出物流详情
+		    	checkDeliver(orderId){
+		    		this.deliverVisible = true;
+		    		this.$http.get('api/admin/express/'+orderId, {}, {emulateJSON: true}).then(function (response) {
+	              		this.deliverInfo = response.data.data.data
+	                }, function (response) {
+						if(response.status == 401 || response.status == 403){
+							//session过期
+							this.$router.push({ path: 'login'})
+						}
+						else{
+							alert('对不起，请求错误，请重新请求哦！');
+						}
+						
+	                })
+		    	},
+		    	
 		    //获取
-		    orderInfoRequest(oPage){
+		    orderInfoRequest(){
 	            	this.$http.get('api/admin/orders?perPage=10&pageNum='+this.curPage, {}, {emulateJSON: true}).then(function (response) {
               		this.tableData = response.data.data;
               		this.totalPage = response.data.total_page*10;
@@ -203,7 +240,7 @@
 		    //翻页
 		    changePage(val){
 			    	this.curPage = val;
-			    	this.orderInfoRequest(val)
+			    	this.orderInfoRequest()
 		    }
 	    }
 	};
@@ -229,13 +266,9 @@
 		margin-right: 16px;
 	}
 	
-	/*.el-checkbox, .el-checkbox{
-		margin-left:0!important;
-		margin-right:10px;
-		width:60px;
-		display: inline-block;
+	.redDeliver{
+		color: orangered
 	}
-	*/
 	.new_user_form{
 		width:460px;
 	}
